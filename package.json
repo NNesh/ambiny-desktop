@@ -1,0 +1,54 @@
+{
+  "name": "ambinight",
+  "version": "0.0.1",
+  "description": "An ambilight client",
+  "main": "./dist/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:main": "NODE_ENV=development webpack --config build/webpack.config.main.js && electron .",
+    "start:renderer": "NODE_ENV=development webpack serve --config build/webpack.config.renderer.js",
+    "build:renderer": "NODE_ENV=production webpack --config build/webpack.config.renderer.js",
+    "build:main": "NODE_ENV=production webpack --config build/webpack.config.main.js",
+    "build": "npm run build:renderer && npm run build:main"
+  },
+  "repository": "",
+  "keywords": [
+    "Electron",
+    "Ambilight"
+  ],
+  "author": "Ruslan Mullayanov",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-export-default-from": "^7.12.1",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "@types/prop-types": "^15.7.3",
+    "@types/react": "^17.0.0",
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^7.0.0",
+    "css-loader": "^5.0.1",
+    "electron": "^11.1.1",
+    "html-webpack-plugin": "^4.5.1",
+    "less": "^4.1.0",
+    "less-loader": "^7.2.1",
+    "mini-css-extract-plugin": "^1.3.3",
+    "ts-loader": "^8.0.14",
+    "typescript": "^4.1.3",
+    "webpack": "^5.12.3",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1",
+    "webpack-merge": "^5.7.3"
+  },
+  "dependencies": {
+    "bootstrap": "^4.5.3",
+    "events": "^3.2.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "react-bootstrap": "^1.4.3",
+    "react-dom": "^17.0.1"
+  }
+}
