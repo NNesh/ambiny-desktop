@@ -1,0 +1,29 @@
+import RGBA from "../classes/rgba";
+import Bounds from "../modules/Bounds";
+
+export function calculateAvgColorsOfRegions(canvasContext: CanvasRenderingContext2D, regions: Bounds[]) {
+    return regions.map((region) => {
+        const frame = canvasContext.getImageData(region.x, region.y, region.width, region.height);
+        const { data } = frame;
+        let sumR = 0;
+        let sumG = 0;
+        let sumB = 0;
+        let sumA = 0;
+
+        for (let idx = 0; idx < data.length; idx += 4) {
+            sumR += data[idx];
+            sumG += data[idx + 1];
+            sumB += data[idx + 2];
+            sumA += data[idx + 3];
+        }
+
+        const pixelCount = data.length / 4;
+
+        return new RGBA(
+            sumR / pixelCount,
+            sumG / pixelCount,
+            sumB / pixelCount,
+            sumA / pixelCount
+        );
+    });
+}

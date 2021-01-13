@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './Application.less';
 import RegionsBuilder from './modules/RegionsBuilder';
+import RegionColorCalculator from './components/RegionColorCalculator';
 
 export interface State {
     currentScreen: string;
@@ -38,8 +39,6 @@ export default class Application extends React.Component<{}, State> {
             horPadding,
         } = values;
 
-        console.log('Values:', values);
-
         this.setState({
             currentScreen: screen,
             verticalNumber: ledVertNumber,
@@ -70,7 +69,11 @@ export default class Application extends React.Component<{}, State> {
                                         verticalNumber={verticalNumber}
                                         horizontalPadding={horizontalPadding}
                                         verticalPadding={verticalPadding}
-                                    />
+                                    >
+                                        {(videoElement, regions) => (
+                                            <RegionColorCalculator videoElement={videoElement} regions={regions} />
+                                        )}
+                                    </VideoPreview>
                                 </div>
                                 <div className="Application_Panel">
                                     {

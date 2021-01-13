@@ -81,6 +81,10 @@ function prepareApp() {
     return screen.getPrimaryDisplay().id;
   });
 
+  ipcMain.on('request-update-colors', function(ev, colors) {
+    console.log('COLORS:', colors.length, colors[0]);
+  });
+
   return true;
 }
 

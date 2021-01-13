@@ -9,7 +9,8 @@
     "start:renderer": "NODE_ENV=development webpack serve --config build/webpack.config.renderer.js",
     "build:renderer": "NODE_ENV=production webpack --config build/webpack.config.renderer.js",
     "build:main": "NODE_ENV=production webpack --config build/webpack.config.main.js",
-    "build": "npm run build:renderer && npm run build:main"
+    "build": "npm run build:renderer && npm run build:main",
+    "postinstall": "electron-rebuild"
   },
   "repository": "",
   "keywords": [
@@ -32,6 +33,7 @@
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
     "electron": "^11.1.1",
+    "electron-rebuild": "^2.3.4",
     "html-webpack-plugin": "^4.5.1",
     "less": "^4.1.0",
     "less-loader": "^7.2.1",
@@ -52,6 +54,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "serialport": "^9.0.4"
   }
 }

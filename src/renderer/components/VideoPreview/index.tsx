@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useCallback, useState, useRef, ReactNode } from 'react';
 import Bounds from '../../modules/Bounds';
 import RegionsBuilder, { Corner } from '../../modules/RegionsBuilder';
 
@@ -10,7 +10,7 @@ export interface Props {
     horizontalNumber: number,
     verticalPadding: number,
     horizontalPadding: number,
-    children?: (videoElement: HTMLVideoElement) => undefined,
+    children?: (videoElement: HTMLVideoElement, regions?: Bounds[]) => ReactNode,
 };
 
 export default function VideoPreview(props: Props) {
@@ -74,7 +74,7 @@ export default function VideoPreview(props: Props) {
         <div className="VideoPreview">
             <video ref={videoRef} autoPlay></video>
             {renderRegions}
-            {children && videoRef?.current && children(videoRef.current)}
+            {children && videoRef?.current && children(videoRef.current, regions)}
         </div>
     );
 }
