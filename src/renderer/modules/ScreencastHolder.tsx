@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { desktopCapturer, ipcRenderer } from 'electron';
+import { desktopCapturer, ipcRenderer, DesktopCapturerSource } from 'electron';
 
 export enum EVENTS {
     STREAM_UPDATED = 'stream-updated',
@@ -15,6 +15,7 @@ export interface Options {
 
 export default class ScreencastHolder extends EventEmitter {
     private _currentStream: MediaStream = null;
+    private _screens: DesktopCapturerSource[] = [];
     private maxWidth = 640;
     private minWidth = 320;
     private maxHeight = 480
@@ -47,21 +48,35 @@ export default class ScreencastHolder extends EventEmitter {
         return this._currentStream;
     }
 
+    get screens(): DesktopCapturerSource[] {
+        return this._screens;
+    }
+
     getPrimaryDisplayId = () => {
         return ipcRenderer.invoke('get-primary-screen-id');
     };
 
-    getScreen = async () => {
-        const primaryDisplayId = await this.getPrimaryDisplayId();
+    getScreen = async (id?: string) => {
         const sources = await desktopCapturer.getSources({
             types: ['screen'],
         });
 
-        if (!sources[primaryDisplayId - 1]) {
-            throw new Error('Unable to get a primary display');
+        this._screens = sources;
+
+        if (id) {
+            const pickedScreen = sources.find(source => source.id === id);
+            if (!pickedScreen) {
+                throw new Error('No such screen');
+            }
+
+            return pickedScreen;
         }
 
-        return sources[primaryDisplayId - 1];
+        if (sources.length === 0) {
+            throw new Error('No screens');
+        }
+
+        return sources[0];
     };
 
     requestMedia = async (sourceId: string) => {
@@ -85,10 +100,10 @@ export default class ScreencastHolder extends EventEmitter {
         return stream;
     };
 
-    getMediaStream = async () => {
+    getMediaStream = async (id?: string) => {
         this.dispose();
 
-        const screen = await this.getScreen();
+        const screen = await this.getScreen(id);
         try {
             const stream = await this.requestMedia(screen.id);
 

@@ -1,3 +1,4 @@
+import { DesktopCapturerSource } from 'electron';
 import React, { ReactNode } from 'react';
 import ScreencastHolder, { EVENTS } from '../../modules/ScreencastHolder';
 
@@ -5,7 +6,7 @@ import ScreencastHolder, { EVENTS } from '../../modules/ScreencastHolder';
 export interface ScreencastProps {
     screen?: string;
     autoRequest?: boolean;
-    children: (stream: MediaStream) => ReactNode;
+    children: (stream: MediaStream, screens: DesktopCapturerSource[]) => ReactNode;
 }
 
 export interface State {
@@ -30,6 +31,18 @@ export default class Screencast extends React.Component<ScreencastProps, State> 
         }
     }
 
+    shouldComponentUpdate(nextProps: ScreencastProps): boolean {
+        if (!nextProps.screen) {
+            this.screencastHolder.dispose();
+            return false;
+        } else if (this.props.screen !== nextProps.screen) {
+            this.screencastHolder.getMediaStream(nextProps.screen);
+            return false;
+        }
+
+        return true;
+    }
+
     componentWillUnmount() {
         this.screencastHolder.off(EVENTS.STREAM_UPDATED, this.handleStreamUpdate);
         this.screencastHolder.off(EVENTS.STREAM_ERROR, this.handleStreamError);
@@ -46,6 +59,6 @@ export default class Screencast extends React.Component<ScreencastProps, State> 
     }
 
     render() {
-        return this.props.children(this.screencastHolder.currentStream);
+        return this.props.children(this.screencastHolder.currentStream, this.screencastHolder.screens);
     }
 }
