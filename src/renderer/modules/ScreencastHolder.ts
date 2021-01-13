@@ -18,8 +18,8 @@ export default class ScreencastHolder extends EventEmitter {
     private _screens: DesktopCapturerSource[] = [];
     private maxWidth = 640;
     private minWidth = 320;
-    private maxHeight = 480
-    private minHeight = 160;
+    private maxHeight = 360;
+    private minHeight = 200;
 
     constructor(options: Options = {}) {
         super();

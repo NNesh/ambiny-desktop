@@ -5,17 +5,23 @@ import { DesktopCapturerSource } from 'electron';
 
 export interface FormOptions {
     screen?: string,
+    ledVertNumber: number,
+    ledHorNumber: number,
 };
 
 export interface Props {
     screens?: DesktopCapturerSource[];
     selectedScreenId?: string;
+    initialLedVertNumber: number;
+    initialLedHorNumber: number;
     onUpdateOptions: (values: FormOptions) => void;
 };
 
 export default function ControlPanel({
     screens,
     selectedScreenId,
+    initialLedVertNumber = 12,
+    initialLedHorNumber = 12,
     onUpdateOptions,
 }: Props) {
     const screenOptions = useMemo(() => {
@@ -24,7 +30,9 @@ export default function ControlPanel({
 
     const initialValues = useMemo(
         (): FormOptions => ({
-            screen: selectedScreenId
+            screen: selectedScreenId,
+            ledVertNumber: initialLedVertNumber,
+            ledHorNumber: initialLedHorNumber,
         }),
         []
     );
@@ -35,6 +43,8 @@ export default function ControlPanel({
         setSubmitting(false);
         setTouched({
             screen: false,
+            ledHorNumber: false,
+            ledVertNumber: false,
         });
     }, [onUpdateOptions]);
 
@@ -55,7 +65,7 @@ export default function ControlPanel({
                 }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group controlId="formScreen">
-                        <Form.Label>Selected screen</Form.Label>
+                            <Form.Label>Selected screen</Form.Label>
                             <Form.Control
                                 name="screen"
                                 as="select"
@@ -68,6 +78,36 @@ export default function ControlPanel({
                             </Form.Control>
                             <Form.Control.Feedback type="invalid" tooltip>
                                 {errors.screen}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group controlId="formLedHorNumber">
+                            <Form.Label>LED horizontal number</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="ledHorNumber"
+                                min={0}
+                                value={values.ledHorNumber}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                isValid={touched.ledHorNumber && !errors.ledHorNumber}
+                            />
+                            <Form.Control.Feedback type="invalid" tooltip>
+                                {errors.ledHorNumber}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group controlId="formLedVertNumber">
+                            <Form.Label>LED vertical number</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="ledVertNumber"
+                                min={0}
+                                value={values.ledVertNumber}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                isValid={touched.ledVertNumber && !errors.ledVertNumber}
+                            />
+                            <Form.Control.Feedback type="invalid" tooltip>
+                                {errors.ledVertNumber}
                             </Form.Control.Feedback>
                         </Form.Group>
                         <Button variant="primary" type="submit" disabled={isSubmitting}>
