@@ -28,11 +28,15 @@ export default class RegionsBuilder {
     private corner: Corner;
     private verticalRegions: number;
     private horizontalRegions: number;
+    private horizontalPadding: number;
+    private verticalPadding: number;
     private bounds: Bounds;
 
-    constructor(verticalRegions: number, horizontalRegions: number, bounds: Bounds, corner: Corner = Corner.BOTTOM_RIGHT) {
+    constructor(verticalRegions: number, horizontalRegions: number, bounds: Bounds, horizontalPadding: number, verticalPadding: number, corner: Corner = Corner.BOTTOM_RIGHT) {
         this.verticalRegions = verticalRegions;
         this.horizontalRegions = horizontalRegions;
+        this.horizontalPadding = horizontalPadding;
+        this.verticalPadding = verticalPadding;
         this.corner = corner;
         this.bounds = bounds;
     }
@@ -81,12 +85,17 @@ export default class RegionsBuilder {
     };
 
     build = (): Bounds[] => {
+        const verticalWorkArea = this.bounds.height - this.verticalPadding * 2;
+        const horizontalWorkArea = this.bounds.width - this.horizontalPadding * 2;
+
         const verticalRegionWidth = this.bounds.width * 0.1;
-        const verticalRegionHeight = this.bounds.height / this.verticalRegions;
-        const verticalOffset = (this.bounds.height - this.verticalRegions * verticalRegionHeight) / 2;
+        const verticalRegionHeight = verticalWorkArea / this.verticalRegions;
+        const verticalOffset = (verticalWorkArea - this.verticalRegions * verticalRegionHeight) / 2 + this.verticalPadding;
+
         const horizontalRegionHeight = this.bounds.height * 0.1;
-        const horizontalRegionWidth = this.bounds.width / this.verticalRegions;
-        const horizontalOffset = (this.bounds.width - this.horizontalRegions * horizontalRegionWidth) / 2;
+        const horizontalRegionWidth = horizontalWorkArea / this.horizontalRegions;
+        const horizontalOffset = (horizontalWorkArea - this.horizontalRegions * horizontalRegionWidth) / 2 + this.horizontalPadding;
+
         const bounds: Bounds[] = [];
 
         const generateVerticalSide = (side: VerticalSide, inverted = false) => {

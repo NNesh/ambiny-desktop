@@ -8,6 +8,8 @@ export interface Props {
     videoStream?: MediaStream,
     verticalNumber: number,
     horizontalNumber: number,
+    verticalPadding: number,
+    horizontalPadding: number,
     children?: (videoElement: HTMLVideoElement) => undefined,
 };
 
@@ -16,6 +18,8 @@ export default function VideoPreview(props: Props) {
         videoStream,
         verticalNumber = 0,
         horizontalNumber = 0,
+        horizontalPadding = 0,
+        verticalPadding = 0,
         children,
     } = props;
     const videoRef = useRef<HTMLVideoElement>();
@@ -32,14 +36,14 @@ export default function VideoPreview(props: Props) {
                 bounds.width = videoSettings.width;
                 bounds.height = videoSettings.height;
 
-                const regionsBuilder = new RegionsBuilder(verticalNumber, horizontalNumber, bounds, Corner.BOTTOM_RIGHT);
+                const regionsBuilder = new RegionsBuilder(verticalNumber, horizontalNumber, bounds, bounds.width / 4 * horizontalPadding / 100, bounds.height / 4 * verticalPadding / 100, Corner.BOTTOM_RIGHT);
                 setRegions(regionsBuilder.build());
             } else {
                 elem.srcObject = undefined;
                 setRegions(null);
             }
         }
-    }, [videoStream]);
+    }, [videoStream, horizontalPadding, verticalPadding, horizontalNumber, verticalNumber]);
 
     const renderRegion = useCallback((region: Bounds) => {
         const videoSettings = videoStream.getVideoTracks()[0].getSettings();
@@ -48,6 +52,7 @@ export default function VideoPreview(props: Props) {
 
         return (
             <div
+                key={`region-${region.x}-${region.y}`}
                 className="VideoPreview_Region"
                 style={{
                     left: `${region.x / width  * 100}%`,

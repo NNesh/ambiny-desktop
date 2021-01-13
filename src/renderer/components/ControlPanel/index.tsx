@@ -7,6 +7,8 @@ export interface FormOptions {
     screen?: string,
     ledVertNumber: number,
     ledHorNumber: number,
+    vertPadding: number,
+    horPadding: number,
 };
 
 export interface Props {
@@ -14,6 +16,8 @@ export interface Props {
     selectedScreenId?: string;
     initialLedVertNumber: number;
     initialLedHorNumber: number;
+    initialHorPadding: number,
+    initialVertPadding: number,
     onUpdateOptions: (values: FormOptions) => void;
 };
 
@@ -22,6 +26,8 @@ export default function ControlPanel({
     selectedScreenId,
     initialLedVertNumber = 12,
     initialLedHorNumber = 12,
+    initialHorPadding = 0,
+    initialVertPadding = 0,
     onUpdateOptions,
 }: Props) {
     const screenOptions = useMemo(() => {
@@ -33,18 +39,21 @@ export default function ControlPanel({
             screen: selectedScreenId,
             ledVertNumber: initialLedVertNumber,
             ledHorNumber: initialLedHorNumber,
+            vertPadding: initialVertPadding,
+            horPadding: initialHorPadding,
         }),
         []
     );
 
     const handleOptionsUpdating = useCallback((values, { setSubmitting, setTouched }: FormikHelpers<any>) => {
         onUpdateOptions(values);
-        console.log(values);
         setSubmitting(false);
         setTouched({
             screen: false,
             ledHorNumber: false,
             ledVertNumber: false,
+            horPadding: false,
+            vertPadding: false,
         });
     }, [onUpdateOptions]);
 
@@ -108,6 +117,38 @@ export default function ControlPanel({
                             />
                             <Form.Control.Feedback type="invalid" tooltip>
                                 {errors.ledVertNumber}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group controlId="formHorPadding">
+                            <Form.Label>LED horizontal padding</Form.Label>
+                            <Form.Control
+                                type="range"
+                                name="horPadding"
+                                min={5}
+                                max={100}
+                                value={values.horPadding}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                isValid={touched.horPadding && !errors.horPadding}
+                            />
+                            <Form.Control.Feedback type="invalid" tooltip>
+                                {errors.horPadding}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group controlId="formVertPadding">
+                            <Form.Label>LED vertical padding</Form.Label>
+                            <Form.Control
+                                type="range"
+                                name="vertPadding"
+                                min={5}
+                                max={100}
+                                value={values.vertPadding}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                isValid={touched.vertPadding && !errors.vertPadding}
+                            />
+                            <Form.Control.Feedback type="invalid" tooltip>
+                                {errors.vertPadding}
                             </Form.Control.Feedback>
                         </Form.Group>
                         <Button variant="primary" type="submit" disabled={isSubmitting}>

@@ -12,6 +12,8 @@ export interface State {
     currentScreen: string;
     verticalNumber: number;
     horizontalNumber: number;
+    verticalPadding: number;
+    horizontalPadding: number;
 };
 
 export default class Application extends React.Component<{}, State> {
@@ -22,15 +24,28 @@ export default class Application extends React.Component<{}, State> {
             currentScreen: '',
             verticalNumber: 12,
             horizontalNumber: 12,
+            verticalPadding: 5,
+            horizontalPadding: 5,
         };
     }
 
     handleChangeScreen = (values: FormOptions) => {
-        const { screen, ledHorNumber, ledVertNumber } = values;
+        const {
+            screen,
+            ledHorNumber,
+            ledVertNumber,
+            vertPadding,
+            horPadding,
+        } = values;
+
+        console.log('Values:', values);
+
         this.setState({
-            currentScreen: values.screen,
+            currentScreen: screen,
             verticalNumber: ledVertNumber,
             horizontalNumber: ledHorNumber,
+            verticalPadding: vertPadding,
+            horizontalPadding: horPadding,
         });
     };
 
@@ -39,6 +54,8 @@ export default class Application extends React.Component<{}, State> {
             currentScreen,
             horizontalNumber,
             verticalNumber,
+            horizontalPadding,
+            verticalPadding,
         } = this.state;
         return (
             <div className="Application">
@@ -47,16 +64,28 @@ export default class Application extends React.Component<{}, State> {
                         (videoStream, screens) => (
                             <Fragment>
                                 <div className="Application_VideoContainer">
-                                    <VideoPreview videoStream={videoStream} horizontalNumber={horizontalNumber} verticalNumber={verticalNumber} />
+                                    <VideoPreview
+                                        videoStream={videoStream}
+                                        horizontalNumber={horizontalNumber}
+                                        verticalNumber={verticalNumber}
+                                        horizontalPadding={horizontalPadding}
+                                        verticalPadding={verticalPadding}
+                                    />
                                 </div>
                                 <div className="Application_Panel">
-                                    <ControlPanel
-                                        onUpdateOptions={this.handleChangeScreen}
-                                        screens={screens}
-                                        selectedScreenId={currentScreen}
-                                        initialLedVertNumber={horizontalNumber}
-                                        initialLedHorNumber={verticalNumber}
-                                    />
+                                    {
+                                        screens?.length && (
+                                            <ControlPanel
+                                                onUpdateOptions={this.handleChangeScreen}
+                                                screens={screens}
+                                                selectedScreenId={currentScreen || screens[0]?.id}
+                                                initialLedVertNumber={horizontalNumber}
+                                                initialLedHorNumber={verticalNumber}
+                                                initialHorPadding={horizontalPadding}
+                                                initialVertPadding={verticalPadding}
+                                            />
+                                        )
+                                    }
                                 </div>
                             </Fragment>
                         )
