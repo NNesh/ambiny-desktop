@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers, FormikTouched } from 'formik';
 import { Form, Button } from 'react-bootstrap';
 import { DesktopCapturerSource } from 'electron';
 
@@ -29,10 +29,13 @@ export default function ControlPanel({
         []
     );
 
-    const handleOptionsUpdating = useCallback((values, { setSubmitting }) => {
+    const handleOptionsUpdating = useCallback((values, { setSubmitting, setTouched }: FormikHelpers<any>) => {
         onUpdateOptions(values);
         console.log(values);
         setSubmitting(false);
+        setTouched({
+            screen: false,
+        });
     }, [onUpdateOptions]);
 
     return (
@@ -46,6 +49,7 @@ export default function ControlPanel({
                     errors,
                     touched,
                     handleChange,
+                    handleBlur,
                     handleSubmit,
                     isSubmitting,
                 }) => (
@@ -57,6 +61,7 @@ export default function ControlPanel({
                                 as="select"
                                 value={values.screen}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 isValid={touched.screen && !errors.screen}
                             >
                                 {screenOptions}
