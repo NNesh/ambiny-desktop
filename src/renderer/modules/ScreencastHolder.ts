@@ -88,6 +88,8 @@ export default class ScreencastHolder extends EventEmitter {
                 maxWidth: this.maxWidth,
                 minHeight: this.minHeight,
                 maxHeight: this.maxHeight,
+                minFrameRate: 8,
+                maxFrameRate: 12,
             },
         };
 
