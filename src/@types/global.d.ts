@@ -1,5 +1,5 @@
 import { DesktopCapturerSource } from 'electron';
-import RGBA from "../renderer/classes/rgba";
+import RGBA from "../renderer/classes/RGBA";
 
 declare global {
     interface ElectronAPI {

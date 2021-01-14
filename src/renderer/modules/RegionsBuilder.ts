@@ -1,6 +1,6 @@
-import Bounds from "./Bounds";
-import Point from "./Point";
-import Size from "./Size";
+import Bounds from "../classes/Bounds";
+import Point from "../classes/Point";
+import Size from "../classes/Size";
 
 export enum Corner {
     TOP_RIGHT = 0,

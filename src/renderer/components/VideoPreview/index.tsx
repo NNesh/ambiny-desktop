@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useCallback, useState, useRef, ReactNode } from 'react';
-import Bounds from '../../modules/Bounds';
+import Bounds from '../../classes/Bounds';
 import RegionsBuilder, { Corner } from '../../modules/RegionsBuilder';
 
 import './VideoPreview.less';

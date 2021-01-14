@@ -1,7 +1,7 @@
 // import { ipcRenderer } from 'electron';
 import React, { createRef } from 'react';
 import { calculateAvgColorsOfRegions } from '../../helpers/regions';
-import Bounds from '../../modules/Bounds';
+import Bounds from '../../classes/Bounds';
 
 const DEFAULT_STYLE = {
     display: 'none',

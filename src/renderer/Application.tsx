@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Screencast from './components/Screencast';
 import VideoPreview from './components/VideoPreview';
 import ControlPanel, { FormOptions } from './components/ControlPanel';
-import Bounds from './modules/Bounds';
+import Bounds from './classes/Bounds';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './Application.less';

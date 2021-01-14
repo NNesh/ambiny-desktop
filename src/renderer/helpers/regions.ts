@@ -1,5 +1,5 @@
-import RGBA from "../classes/rgba";
-import Bounds from "../modules/Bounds";
+import RGBA from "../classes/RGBA";
+import Bounds from "../classes/Bounds";
 
 export function calculateAvgColorsOfRegions(canvasContext: CanvasRenderingContext2D, regions: Bounds[]) {
     return regions.map((region) => {
