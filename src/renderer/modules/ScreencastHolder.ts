@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { desktopCapturer, ipcRenderer, DesktopCapturerSource } from 'electron';
+import { DesktopCapturerSource } from 'electron';
 
 export enum EVENTS {
     STREAM_UPDATED = 'stream-updated',
@@ -53,13 +53,12 @@ export default class ScreencastHolder extends EventEmitter {
     }
 
     getPrimaryDisplayId = () => {
-        return ipcRenderer.invoke('get-primary-screen-id');
+        return window.electronApi.getPrimaryDisplayId();
+        // return ipcRenderer.invoke('get-primary-screen-id');
     };
 
     getScreen = async (id?: string) => {
-        const sources = await desktopCapturer.getSources({
-            types: ['screen'],
-        });
+        const sources = await window.electronApi.getScreenSources() as DesktopCapturerSource[];
 
         this._screens = sources;
 

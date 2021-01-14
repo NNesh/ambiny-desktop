@@ -20,10 +20,16 @@ module.exports = merge(base, {
     },
     plugins: [
         new CopyPlugin({
-            patterns: [{
-                from: 'assets/images',
-                to: 'images',
-            }],
+            patterns: [
+                {
+                    from: 'assets/images',
+                    to: 'images',
+                },
+                {
+                    from: 'src/main/preload.js',
+                    to: 'preload.js',
+                },
+            ],
         }),
     ],
 });

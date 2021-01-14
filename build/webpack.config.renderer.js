@@ -22,7 +22,7 @@ if (isDev) {
 }
 
 const config = {
-    target: 'electron-renderer',
+    target: 'web',
     entry: './src/renderer/index.tsx',
     output: {
         filename: 'renderer.js',

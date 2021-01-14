@@ -22,6 +22,7 @@ function createWindow() {
     x: Math.floor(openScreen.bounds.x + openScreen.bounds.width / 2 - windowWidth / 2),
     y: Math.floor(openScreen.bounds.y + openScreen.bounds.height / 2 - windowHeight / 2),
     webPreferences: {
+      preload: path.resolve(__dirname, 'preload.js'),
       nodeIntegration: true,
       nodeIntegrationInSubFrames: false,
       nodeIntegrationInWorker: false,

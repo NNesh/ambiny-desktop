@@ -5,7 +5,7 @@
   "main": "./dist/main.js",
   "scripts": {
     "start": "electron .",
-    "start:main": "NODE_ENV=development webpack --config build/webpack.config.main.js && electron .",
+    "start:main": "NODE_ENV=development webpack --config build/webpack.config.main.js && electron ./dist/main.js",
     "start:renderer": "NODE_ENV=development webpack serve --config build/webpack.config.renderer.js",
     "build:renderer": "NODE_ENV=production webpack --config build/webpack.config.renderer.js",
     "build:main": "NODE_ENV=production webpack --config build/webpack.config.main.js",

@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+// import { ipcRenderer } from 'electron';
 import React, { createRef } from 'react';
 import { calculateAvgColorsOfRegions } from '../../helpers/regions';
 import Bounds from '../../modules/Bounds';
@@ -44,7 +44,8 @@ export default class RegionColorCalculator extends React.Component<Props> {
                 );
 
                 const colors = calculateAvgColorsOfRegions(this.canvasContext, regions);
-                ipcRenderer.send('request-update-colors', colors);
+                window.electronApi.sendUpdateColorsRequest(colors);
+                // ipcRenderer.send('request-update-colors', colors);
             }
 
             setTimeout(this.handleFrame, 120);
