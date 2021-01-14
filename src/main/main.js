@@ -11,6 +11,12 @@ let appTray,
     mainWindow,
     appWillClose = false;
 
+function trayOpenWindow() {
+  if (mainWindow && (!mainWindow.isVisible() || !mainWindow.isFocused())) {
+    mainWindow.show();
+  }
+}
+
 function createWindow() {
   const openScreen = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
   const windowWidth = openScreen.bounds.width * 0.75;
@@ -62,9 +68,7 @@ function prepareApp() {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Open window',
-      click: function() {
-        mainWindow.show();
-      },
+      click: trayOpenWindow,
     },
     {
       label: 'Exit',
@@ -74,9 +78,7 @@ function prepareApp() {
     },
   ]);
   appTray.setContextMenu(contextMenu);
-  appTray.on('click', function() {
-    mainWindow.show();
-  });
+  appTray.on('click', trayOpenWindow);
 
   ipcMain.handle('get-primary-screen-id', function() {
     return screen.getPrimaryDisplay().id;
