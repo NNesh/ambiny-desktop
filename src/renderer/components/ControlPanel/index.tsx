@@ -1,6 +1,7 @@
-import React, { useMemo, useCallback } from 'react';
-import { Formik, FormikHelpers, FormikTouched } from 'formik';
-import { Form, Button } from 'react-bootstrap';
+import React, { useMemo, useCallback, useRef } from 'react';
+import debounce from 'lodash/debounce';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
+import { Form,  } from 'react-bootstrap';
 import { DesktopCapturerSource } from 'electron';
 
 export interface FormOptions {
@@ -20,6 +21,7 @@ export interface Props {
     initialVertPadding: number,
     onUpdateOptions: (values: FormOptions) => void;
 };
+
 
 export default function ControlPanel({
     screens,
@@ -45,6 +47,20 @@ export default function ControlPanel({
         []
     );
 
+    const validate = useCallback((values: FormOptions) => {
+        const errors: any = {};
+
+        if (values.ledHorNumber < 1) {
+            errors.ledHorNumber = 'LED count should be positive';
+        }
+
+        if (values.ledVertNumber < 1) {
+            errors.ledVertNumber = 'LED count should be positive';
+        }
+
+        return errors;
+    }, []);
+
     const handleOptionsUpdating = useCallback((values, { setSubmitting, setTouched }: FormikHelpers<any>) => {
         onUpdateOptions(values);
         setSubmitting(false);
@@ -57,106 +73,119 @@ export default function ControlPanel({
         });
     }, [onUpdateOptions]);
 
+    const renderForm = useCallback((options: FormikProps<FormOptions>) => {
+        const {
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            dirty,
+            // isSubmitting,
+        } = options;
+
+        const submitButtonRef = useRef<HTMLButtonElement>();
+        const debouncedSubmit = useMemo(() => debounce(() => submitButtonRef.current?.click(), 1500), [submitButtonRef?.current]);
+
+        const customChangeHandler = useCallback((e: React.ChangeEvent<any>) => {
+            debouncedSubmit();
+            return handleChange(e);
+        }, [debouncedSubmit]);
+
+        return (
+            <Form noValidate onSubmit={handleSubmit}>
+                <h3>Options</h3>
+                <Form.Group controlId="formScreen">
+                    <Form.Label>Selected screen</Form.Label>
+                    <Form.Control
+                        name="screen"
+                        as="select"
+                        value={values.screen}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isValid={!!errors.screen}
+                    >
+                        {screenOptions}
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid" tooltip>
+                        {errors.screen}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formLedHorNumber">
+                    <Form.Label>LED horizontal number</Form.Label>
+                    <Form.Control
+                        type="number"
+                        name="ledHorNumber"
+                        min={0}
+                        value={values.ledHorNumber}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isInvalid={!!errors.ledHorNumber}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.ledHorNumber}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formLedVertNumber">
+                    <Form.Label>LED vertical number</Form.Label>
+                    <Form.Control
+                        type="number"
+                        name="ledVertNumber"
+                        min={0}
+                        value={values.ledVertNumber}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isInvalid={!!errors.ledVertNumber}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.ledVertNumber}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formHorPadding">
+                    <Form.Label>LED horizontal padding</Form.Label>
+                    <Form.Control
+                        type="range"
+                        name="horPadding"
+                        min={5}
+                        max={100}
+                        value={values.horPadding}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isInvalid={!!errors.horPadding}
+                    />
+                    <Form.Control.Feedback type="invalid" tooltip>
+                        {errors.horPadding}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formVertPadding">
+                    <Form.Label>LED vertical padding</Form.Label>
+                    <Form.Control
+                        type="range"
+                        name="vertPadding"
+                        min={5}
+                        max={100}
+                        value={values.vertPadding}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isInvalid={!!errors.vertPadding}
+                    />
+                    <Form.Control.Feedback type="invalid" tooltip>
+                        {errors.vertPadding}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <button ref={submitButtonRef} className="hidden" type="submit"></button>
+            </Form>
+        )
+    }, []);
+
     return (
         <Formik
             initialValues={initialValues}
             onSubmit={handleOptionsUpdating}
+            validate={validate}
         >
-            {
-                ({
-                    values,
-                    errors,
-                    touched,
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    isSubmitting,
-                }) => (
-                    <Form noValidate onSubmit={handleSubmit}>
-                        <Form.Group controlId="formScreen">
-                            <Form.Label>Selected screen</Form.Label>
-                            <Form.Control
-                                name="screen"
-                                as="select"
-                                value={values.screen}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                isValid={touched.screen && !errors.screen}
-                            >
-                                {screenOptions}
-                            </Form.Control>
-                            <Form.Control.Feedback type="invalid" tooltip>
-                                {errors.screen}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="formLedHorNumber">
-                            <Form.Label>LED horizontal number</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="ledHorNumber"
-                                min={0}
-                                value={values.ledHorNumber}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                isValid={touched.ledHorNumber && !errors.ledHorNumber}
-                            />
-                            <Form.Control.Feedback type="invalid" tooltip>
-                                {errors.ledHorNumber}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="formLedVertNumber">
-                            <Form.Label>LED vertical number</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="ledVertNumber"
-                                min={0}
-                                value={values.ledVertNumber}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                isValid={touched.ledVertNumber && !errors.ledVertNumber}
-                            />
-                            <Form.Control.Feedback type="invalid" tooltip>
-                                {errors.ledVertNumber}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="formHorPadding">
-                            <Form.Label>LED horizontal padding</Form.Label>
-                            <Form.Control
-                                type="range"
-                                name="horPadding"
-                                min={5}
-                                max={100}
-                                value={values.horPadding}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                isValid={touched.horPadding && !errors.horPadding}
-                            />
-                            <Form.Control.Feedback type="invalid" tooltip>
-                                {errors.horPadding}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="formVertPadding">
-                            <Form.Label>LED vertical padding</Form.Label>
-                            <Form.Control
-                                type="range"
-                                name="vertPadding"
-                                min={5}
-                                max={100}
-                                value={values.vertPadding}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                isValid={touched.vertPadding && !errors.vertPadding}
-                            />
-                            <Form.Control.Feedback type="invalid" tooltip>
-                                {errors.vertPadding}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" disabled={isSubmitting}>
-                            Save
-                        </Button>
-                    </Form>
-                )
-            }
+            {renderForm}
         </Formik>
     );
 }
