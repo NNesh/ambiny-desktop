@@ -204,7 +204,7 @@ export default function ControlPanel({
                 <button ref={submitButtonRef} className="hidden" type="submit"></button>
             </Form>
         )
-    }, []);
+    }, [screenOptions, portsOptions]);
 
     return (
         <Formik

@@ -54,7 +54,7 @@ export default class Application extends React.Component<{}, State> {
     }
 
     componentWillUnmount() {
-        this.serialDataChannel.close();
+        this.serialDataChannel.close().catch(console.error);
     }
 
     updateAvailablePortsList = () => {
@@ -79,10 +79,12 @@ export default class Application extends React.Component<{}, State> {
                 await this.serialDataChannel.close();
             }
     
-            await this.serialDataChannel.open(portPath, options);
+            await this.serialDataChannel.open(portPath, options || { baudRate: 9600 });
+        } catch (error) {
+            console.error(error);
         } finally {
             this.forceUpdate();
-        }        
+        }
     };
 
     handleChangeScreen = (values: FormOptions) => {
@@ -118,7 +120,7 @@ export default class Application extends React.Component<{}, State> {
             availablePorts,
         } = this.state;
 
-        if (!screens?.length && !availablePorts) {
+        if (screens?.length === 0 || !availablePorts) {
             return (
                 <div className="Application_Placeholder">
                     Getting screens and available COM ports...
