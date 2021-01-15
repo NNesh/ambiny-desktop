@@ -61,7 +61,7 @@ export default class Application extends React.Component<{}, State> {
         return this.serialDataChannel.getAvailableSerialPorts()
             .then((ports) => {
                 this.setState({
-                    availablePorts: ports//.filter(port => !!port.productId),
+                    availablePorts: ports || []//.filter(port => !!port.productId),
                 });
             })
             .catch((error) => {
@@ -117,6 +117,14 @@ export default class Application extends React.Component<{}, State> {
             availablePorts,
         } = this.state;
 
+        if (!screens?.length && !availablePorts) {
+            return (
+                <div className="Application_Placeholder">
+                    Getting screens and available COM ports...
+                </div>
+            )
+        }
+
         return (
             <Fragment>
                 <div className="Application_VideoContainer">
@@ -133,20 +141,16 @@ export default class Application extends React.Component<{}, State> {
                     </VideoPreview>
                 </div>
                 <div className="Application_Panel">
-                    {
-                        screens?.length && availablePorts?.length ? (
-                            <ControlPanel
-                                onUpdateOptions={this.handleChangeScreen}
-                                screens={screens}
-                                selectedScreenId={screen}
-                                initialLedVertNumber={horizontalNumber}
-                                initialLedHorNumber={verticalNumber}
-                                initialHorPadding={horizontalPadding}
-                                initialVertPadding={verticalPadding}
-                                availablePorts={availablePorts}
-                            />
-                        ) : null
-                    }
+                    <ControlPanel
+                        onUpdateOptions={this.handleChangeScreen}
+                        screens={screens}
+                        selectedScreenId={screen}
+                        initialLedVertNumber={horizontalNumber}
+                        initialLedHorNumber={verticalNumber}
+                        initialHorPadding={horizontalPadding}
+                        initialVertPadding={verticalPadding}
+                        availablePorts={availablePorts}
+                    />
                 </div>
             </Fragment>
         );
