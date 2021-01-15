@@ -15,6 +15,7 @@ export interface Options {
 
 export default class ScreencastHolder extends EventEmitter {
     private _currentStream: MediaStream = null;
+    private _currentScreen: DesktopCapturerSource;
     private _screens: DesktopCapturerSource[] = [];
     private maxWidth = 640;
     private minWidth = 320;
@@ -40,8 +41,10 @@ export default class ScreencastHolder extends EventEmitter {
     }
 
     set currentStream(value: MediaStream) {
-        this._currentStream = value;
-        this.emit(EVENTS.STREAM_UPDATED, value);        
+        if (this._currentStream !== value) {
+            this._currentStream = value;
+            this.emit(EVENTS.STREAM_UPDATED, value);        
+        }
     }
 
     get currentStream(): MediaStream {
@@ -52,13 +55,12 @@ export default class ScreencastHolder extends EventEmitter {
         return this._screens;
     }
 
-    getPrimaryDisplayId = () => {
-        return window.electronApi.getPrimaryDisplayId();
-        // return ipcRenderer.invoke('get-primary-screen-id');
-    };
+    get currentScreen(): DesktopCapturerSource {
+        return this._currentScreen;
+    }
 
     getScreen = async (id?: string) => {
-        const sources = await window.electronApi.getScreenSources() as DesktopCapturerSource[];
+        const sources = await window.electronApi.getScreenSources();
 
         this._screens = sources;
 
@@ -104,14 +106,17 @@ export default class ScreencastHolder extends EventEmitter {
     getMediaStream = async (id?: string) => {
         this.dispose();
 
-        const screen = await this.getScreen(id);
         try {
+            const screen = await this.getScreen(id);
             const stream = await this.requestMedia(screen.id);
 
             this.currentStream = stream;
+            this._currentScreen = screen;
         } catch (error) {
             this.currentStream = null;
+            this._currentScreen = null;
             this.emit(EVENTS.STREAM_ERROR, error);
+            throw error;
         }
     };
 
@@ -120,8 +125,9 @@ export default class ScreencastHolder extends EventEmitter {
             this.currentStream.getTracks().forEach((track) => {
                 track.stop();
             });
-
-            this.currentStream = null;
         }
+
+        this.currentStream = null;
+        this._currentScreen = null;
     };
 }

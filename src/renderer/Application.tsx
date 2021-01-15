@@ -118,7 +118,11 @@ export default class Application extends React.Component<{}, State> {
             <div className="Application">
                 <Screencast screen={currentScreen} autoRequest>
                     {
-                        (videoStream, screens) => (
+                        ({
+                            stream: videoStream,
+                            screen: screen,
+                            availableScreens: screens,
+                        }) => (
                             <Fragment>
                                 <div className="Application_VideoContainer">
                                     <VideoPreview
@@ -135,18 +139,18 @@ export default class Application extends React.Component<{}, State> {
                                 </div>
                                 <div className="Application_Panel">
                                     {
-                                        screens?.length && availablePorts?.length && (
+                                        screens?.length && availablePorts?.length ? (
                                             <ControlPanel
                                                 onUpdateOptions={this.handleChangeScreen}
                                                 screens={screens}
-                                                selectedScreenId={currentScreen || screens[0]?.id}
+                                                selectedScreenId={screen}
                                                 initialLedVertNumber={horizontalNumber}
                                                 initialLedHorNumber={verticalNumber}
                                                 initialHorPadding={horizontalPadding}
                                                 initialVertPadding={verticalPadding}
                                                 availablePorts={availablePorts}
                                             />
-                                        )
+                                        ) : null
                                     }
                                 </div>
                             </Fragment>
