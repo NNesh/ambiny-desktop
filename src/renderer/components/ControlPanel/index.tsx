@@ -95,7 +95,7 @@ export default function ControlPanel({
         } = options;
 
         const submitButtonRef = useRef<HTMLButtonElement>();
-        const debouncedSubmit = useMemo(() => debounce(() => submitButtonRef.current?.click(), 1500), [submitButtonRef?.current]);
+        const debouncedSubmit = useMemo(() => debounce(() => submitButtonRef.current?.click(), 750), [submitButtonRef?.current]);
 
         const customChangeHandler = useCallback((e: React.ChangeEvent<any>) => {
             debouncedSubmit();
