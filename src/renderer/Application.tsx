@@ -79,7 +79,7 @@ export default class Application extends React.Component<{}, State> {
                 await this.serialDataChannel.close();
             }
     
-            await this.serialDataChannel.open(portPath, options || { baudRate: 9600 });
+            await this.serialDataChannel.open(portPath, options);
         } catch (error) {
             console.error(error);
         } finally {
