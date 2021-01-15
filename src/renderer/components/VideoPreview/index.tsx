@@ -28,7 +28,7 @@ export default function VideoPreview(props: Props) {
     useEffect(() => {
         if (videoRef?.current) {
             const elem = videoRef.current;
-            if (videoStream) {
+            if (!!videoStream) {
                 elem.srcObject = videoStream;
 
                 const videoSettings = videoStream.getVideoTracks()[0].getSettings();
@@ -46,6 +46,10 @@ export default function VideoPreview(props: Props) {
     }, [videoStream, horizontalPadding, verticalPadding, horizontalNumber, verticalNumber]);
 
     const renderRegion = useCallback((region: Bounds) => {
+        if (!videoStream) {
+            return null;
+        }
+
         const videoSettings = videoStream.getVideoTracks()[0].getSettings();
         const width = videoSettings.width;
         const height = videoSettings.height;
