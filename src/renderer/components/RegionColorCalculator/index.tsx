@@ -1,20 +1,24 @@
 // import { ipcRenderer } from 'electron';
 import React, { createRef } from 'react';
-import { calculateAvgColorsOfRegions } from '../../helpers/regions';
+import { calculateAvgColorsOfRegions, colorsToBuffer } from '../../helpers/regions';
 import Bounds from '../../classes/Bounds';
+import { DataChannel } from '../../classes/types';
 
 const DEFAULT_STYLE = {
     display: 'none',
 };
 
 export interface Props {
-    videoElement: HTMLVideoElement,
-    regions?: Bounds[],
+    videoElement: HTMLVideoElement;
+    regions?: Bounds[];
+    provider: DataChannel<Buffer, any>;
+    onError?: (error: Error) => void;
 };
 
 export default class RegionColorCalculator extends React.Component<Props> {
     private canvasRef = createRef<HTMLCanvasElement>();
     private canvasContext: CanvasRenderingContext2D;
+    private handleFrameTimeoutId: NodeJS.Timeout;
     private mounted = false;
 
     componentDidMount() {
@@ -27,6 +31,13 @@ export default class RegionColorCalculator extends React.Component<Props> {
 
     componentWillUnmount() {
         this.mounted = false;
+    }
+
+    componentDidUpdate() {
+        const { provider } = this.props;
+        if (provider.isOpen() && !this.handleFrameTimeoutId) {
+            this.handleFrame();
+        }
     }
 
     handleFrame = () => {
@@ -44,12 +55,22 @@ export default class RegionColorCalculator extends React.Component<Props> {
                 );
 
                 const colors = calculateAvgColorsOfRegions(this.canvasContext, regions);
-                window.electronApi.sendUpdateColorsRequest(colors);
-                // ipcRenderer.send('request-update-colors', colors);
-            }
 
-            setTimeout(this.handleFrame, 120);
+                const { provider, onError } = this.props;
+                provider.send(colorsToBuffer(colors))
+                    .then(() => {
+                        this.handleFrameTimeoutId = setTimeout(this.handleFrame, 100);
+                    })
+                    .catch((error) => {
+                        onError && onError(error);
+                        this.handleFrameTimeoutId = null;
+                    });
+
+                return;
+            }
         }
+
+        this.handleFrameTimeoutId = null;
     };
 
     render() {

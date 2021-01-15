@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { Form,  } from 'react-bootstrap';
 import { DesktopCapturerSource } from 'electron';
+import { PortInfo } from 'serialport';
 
 export interface FormOptions {
     screen?: string,
@@ -10,6 +11,7 @@ export interface FormOptions {
     ledHorNumber: number,
     vertPadding: number,
     horPadding: number,
+    port: string,
 };
 
 export interface Props {
@@ -19,6 +21,7 @@ export interface Props {
     initialLedHorNumber: number;
     initialHorPadding: number,
     initialVertPadding: number,
+    availablePorts: PortInfo[],
     onUpdateOptions: (values: FormOptions) => void;
 };
 
@@ -30,11 +33,16 @@ export default function ControlPanel({
     initialLedHorNumber = 12,
     initialHorPadding = 0,
     initialVertPadding = 0,
+    availablePorts,
     onUpdateOptions,
 }: Props) {
     const screenOptions = useMemo(() => {
         return screens.map(screen => <option key={screen.id} value={screen.id}>{screen.name}</option>)
     }, [screens]);
+
+    const portsOptions = useMemo(() => {
+        return availablePorts.map(port => <option key={port.path} value={port.path}>{port.path}</option>)
+    }, [availablePorts]);
 
     const initialValues = useMemo(
         (): FormOptions => ({
@@ -43,6 +51,7 @@ export default function ControlPanel({
             ledHorNumber: initialLedHorNumber,
             vertPadding: initialVertPadding,
             horPadding: initialHorPadding,
+            port: '',
         }),
         []
     );
@@ -70,6 +79,7 @@ export default function ControlPanel({
             ledVertNumber: false,
             horPadding: false,
             vertPadding: false,
+            port: false,
         });
     }, [onUpdateOptions]);
 
@@ -81,7 +91,6 @@ export default function ControlPanel({
             handleChange,
             handleBlur,
             handleSubmit,
-            dirty,
             // isSubmitting,
         } = options;
 
@@ -104,11 +113,12 @@ export default function ControlPanel({
                         value={values.screen}
                         onChange={customChangeHandler}
                         onBlur={handleBlur}
-                        isValid={!!errors.screen}
+                        isInvalid={!!errors.screen}
+                        custom
                     >
                         {screenOptions}
                     </Form.Control>
-                    <Form.Control.Feedback type="invalid" tooltip>
+                    <Form.Control.Feedback type="invalid">
                         {errors.screen}
                     </Form.Control.Feedback>
                 </Form.Group>
@@ -154,7 +164,7 @@ export default function ControlPanel({
                         onBlur={handleBlur}
                         isInvalid={!!errors.horPadding}
                     />
-                    <Form.Control.Feedback type="invalid" tooltip>
+                    <Form.Control.Feedback type="invalid">
                         {errors.horPadding}
                     </Form.Control.Feedback>
                 </Form.Group>
@@ -170,8 +180,25 @@ export default function ControlPanel({
                         onBlur={handleBlur}
                         isInvalid={!!errors.vertPadding}
                     />
-                    <Form.Control.Feedback type="invalid" tooltip>
+                    <Form.Control.Feedback type="invalid">
                         {errors.vertPadding}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formPort">
+                    <Form.Label>Port</Form.Label>
+                    <Form.Control
+                        name="port"
+                        as="select"
+                        value={values.port}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isInvalid={!!errors.port}
+                        custom
+                    >
+                        {portsOptions}
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.port}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <button ref={submitButtonRef} className="hidden" type="submit"></button>
@@ -184,6 +211,7 @@ export default function ControlPanel({
             initialValues={initialValues}
             onSubmit={handleOptionsUpdating}
             validate={validate}
+            enableReinitialize
         >
             {renderForm}
         </Formik>

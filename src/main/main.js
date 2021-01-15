@@ -52,6 +52,8 @@ function createWindow() {
 }
 
 function prepareApp() {
+  app.allowRendererProcessReuse = false;
+
   protocol.registerFileProtocol(APP_PROTOCOL, function (request, callback) {
     const { groups: url } = /^(?<protocol>[-\w]+):\/\/\/(?<path>.*)$/.exec(request.url) || {};
     callback({

@@ -1,3 +1,4 @@
+import flatten from 'lodash/flatten';
 import RGBA from "../classes/RGBA";
 import Bounds from "../classes/Bounds";
 
@@ -26,4 +27,9 @@ export function calculateAvgColorsOfRegions(canvasContext: CanvasRenderingContex
             sumA / pixelCount
         );
     });
+}
+
+export function colorsToBuffer(colors: RGBA[]): Buffer {
+    const values = flatten<number>(colors.map((color => color.toArray())));
+    return Buffer.from(values);
 }
