@@ -53,6 +53,7 @@ function createWindow() {
 
 function prepareApp() {
   app.allowRendererProcessReuse = false;
+  app.commandLine.appendSwitch("disable-background-timer-throttling");
 
   protocol.registerFileProtocol(APP_PROTOCOL, function (request, callback) {
     const { groups: url } = /^(?<protocol>[-\w]+):\/\/\/(?<path>.*)$/.exec(request.url) || {};
