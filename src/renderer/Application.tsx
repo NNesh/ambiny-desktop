@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { PortInfo } from 'serialport';
-import Screencast from './components/Screencast';
+import Screencast, { ChildrenParams as ScerencastContentParams } from './components/Screencast';
 import VideoPreview from './components/VideoPreview';
 import ControlPanel, { FormOptions } from './components/ControlPanel';
 import RegionColorCalculator from './components/RegionColorCalculator';
@@ -104,9 +104,12 @@ export default class Application extends React.Component<{}, State> {
         });
     };
 
-    render() {
+    renderScreencastContent = ({
+        stream: videoStream,
+        screen: screen,
+        availableScreens: screens,
+    }: ScerencastContentParams) => {
         const {
-            currentScreen,
             horizontalNumber,
             verticalNumber,
             horizontalPadding,
@@ -115,47 +118,47 @@ export default class Application extends React.Component<{}, State> {
         } = this.state;
 
         return (
+            <Fragment>
+                <div className="Application_VideoContainer">
+                    <VideoPreview
+                        videoStream={videoStream}
+                        horizontalNumber={horizontalNumber}
+                        verticalNumber={verticalNumber}
+                        horizontalPadding={horizontalPadding}
+                        verticalPadding={verticalPadding}
+                    >
+                        {(videoElement, regions) => (
+                            <RegionColorCalculator videoElement={videoElement} regions={regions} provider={this.serialDataChannel} />
+                        )}
+                    </VideoPreview>
+                </div>
+                <div className="Application_Panel">
+                    {
+                        screens?.length && availablePorts?.length ? (
+                            <ControlPanel
+                                onUpdateOptions={this.handleChangeScreen}
+                                screens={screens}
+                                selectedScreenId={screen}
+                                initialLedVertNumber={horizontalNumber}
+                                initialLedHorNumber={verticalNumber}
+                                initialHorPadding={horizontalPadding}
+                                initialVertPadding={verticalPadding}
+                                availablePorts={availablePorts}
+                            />
+                        ) : null
+                    }
+                </div>
+            </Fragment>
+        );
+    };
+
+    render() {
+        const { currentScreen } = this.state;
+
+        return (
             <div className="Application">
                 <Screencast screen={currentScreen} autoRequest>
-                    {
-                        ({
-                            stream: videoStream,
-                            screen: screen,
-                            availableScreens: screens,
-                        }) => (
-                            <Fragment>
-                                <div className="Application_VideoContainer">
-                                    <VideoPreview
-                                        videoStream={videoStream}
-                                        horizontalNumber={horizontalNumber}
-                                        verticalNumber={verticalNumber}
-                                        horizontalPadding={horizontalPadding}
-                                        verticalPadding={verticalPadding}
-                                    >
-                                        {(videoElement, regions) => (
-                                            <RegionColorCalculator videoElement={videoElement} regions={regions} provider={this.serialDataChannel} />
-                                        )}
-                                    </VideoPreview>
-                                </div>
-                                <div className="Application_Panel">
-                                    {
-                                        screens?.length && availablePorts?.length ? (
-                                            <ControlPanel
-                                                onUpdateOptions={this.handleChangeScreen}
-                                                screens={screens}
-                                                selectedScreenId={screen}
-                                                initialLedVertNumber={horizontalNumber}
-                                                initialLedHorNumber={verticalNumber}
-                                                initialHorPadding={horizontalPadding}
-                                                initialVertPadding={verticalPadding}
-                                                availablePorts={availablePorts}
-                                            />
-                                        ) : null
-                                    }
-                                </div>
-                            </Fragment>
-                        )
-                    }
+                    {this.renderScreencastContent}
                 </Screencast>
             </div>
         );
