@@ -61,7 +61,8 @@ export default class Application extends React.Component<{}, State> {
         return this.serialDataChannel.getAvailableSerialPorts()
             .then((ports) => {
                 this.setState({
-                    availablePorts: ports || []//.filter(port => !!port.productId),
+                    availablePorts: ports || [], //.filter(port => !!port.productId),
+                    portPath: this.state.portPath || ports[0]?.path,
                 });
             })
             .catch((error) => {
