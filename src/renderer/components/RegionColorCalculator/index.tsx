@@ -1,6 +1,6 @@
 // import { ipcRenderer } from 'electron';
 import React, { createRef } from 'react';
-import { calculateAvgColorsOfRegions, colorsToBuffer } from '../../helpers/regions';
+import { calculateAvgColorsOfRegions, colorsToArray, colorsToBuffer } from '../../helpers/regions';
 import Bounds from '../../classes/Bounds';
 import { DataChannel } from '../../classes/types';
 
@@ -18,7 +18,7 @@ export interface Props {
 export default class RegionColorCalculator extends React.Component<Props> {
     private canvasRef = createRef<HTMLCanvasElement>();
     private canvasContext: CanvasRenderingContext2D;
-    private handleFrameTimeoutId: NodeJS.Timeout;
+    private handleFrameTimeoutId: ReturnType<typeof setTimeout>;
     private mounted = false;
 
     componentDidMount() {
@@ -57,7 +57,11 @@ export default class RegionColorCalculator extends React.Component<Props> {
                 const colors = calculateAvgColorsOfRegions(this.canvasContext, regions);
 
                 const { provider, onError } = this.props;
-                provider.send(colorsToBuffer(colors))
+
+                // TODO: implement protocol in another class (interface)
+                const bodyValues = colorsToArray(colors);
+                const uint16Buffer = Uint16Array.from([bodyValues.length, ...bodyValues]);
+                provider.send(Buffer.from(uint16Buffer.buffer))
                     .then(() => {
                         this.handleFrameTimeoutId = setTimeout(this.handleFrame, 100);
                     })

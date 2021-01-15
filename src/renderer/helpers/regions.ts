@@ -29,7 +29,10 @@ export function calculateAvgColorsOfRegions(canvasContext: CanvasRenderingContex
     });
 }
 
+export function colorsToArray(colors: RGBA[]): Array<number> {
+    return flatten<number>(colors.map((color => color.toArray())));
+}
+
 export function colorsToBuffer(colors: RGBA[]): Buffer {
-    const values = flatten<number>(colors.map((color => color.toArray())));
-    return Buffer.from(values);
+    return Buffer.from(colorsToArray(colors));
 }
