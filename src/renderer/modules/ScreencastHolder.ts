@@ -120,6 +120,8 @@ export default class ScreencastHolder extends EventEmitter {
             this.currentStream.getTracks().forEach((track) => {
                 track.stop();
             });
+
+            this.currentStream = null;
         }
     };
 }
