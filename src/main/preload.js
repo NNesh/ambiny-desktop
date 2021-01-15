@@ -38,7 +38,7 @@ SerialPortProvider.prototype.send = function(data) {
             return;
         }
 
-        self.conn.send(data, function(err) {
+        self.conn.write(data, function(err) {
             if (err) {
                 reject(err);
                 return;
@@ -48,6 +48,19 @@ SerialPortProvider.prototype.send = function(data) {
         });
     });
 };
+
+SerialPortProvider.prototype.flush = function() {
+    return new Promise((resolve, reject) => {
+        this.conn.flush(function(err) {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve();
+        });
+    });
+}
 
 SerialPortProvider.prototype.list = function() {
     return SerialPort.list();

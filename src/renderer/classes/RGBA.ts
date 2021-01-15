@@ -55,7 +55,11 @@ export default class RGBA {
         return this._a;
     }
 
-    toArray(): Array<number> {
-        return [this.r, this.g, this.b, this.a];
+    toArray(alpha: boolean = false): Array<number> {
+        if (alpha) {
+            return [this.r, this.g, this.b, this.a];
+        }
+
+        return [this.r, this.g, this.b];
     }
 }

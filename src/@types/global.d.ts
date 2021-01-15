@@ -9,6 +9,7 @@ declare global {
         send: (data: string| number[] | Buffer) => Promise<any>;
         isOpen: () => boolean;
         list: () => Promise<PortInfo[]>;
+        flush: () => Promise<any>;
     }
 
     interface ElectronAPI {

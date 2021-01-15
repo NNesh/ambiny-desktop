@@ -19,8 +19,9 @@ export default class SerialDataChannel implements DataChannel<string | number[] 
         throw new Error('This object doesn\'t implement a write method');
     };
 
-    open = (path: string, options?: any): Promise<any> => {
-        return this.provider.open(path, options);
+    open = async (path: string, options?: any): Promise<any> => {
+        await this.provider.open(path, options);
+        return await this.provider.flush();
     };
 
     close = (...args: any): Promise<any> => {

@@ -1,6 +1,7 @@
 import flatten from 'lodash/flatten';
 import RGBA from "../classes/RGBA";
 import Bounds from "../classes/Bounds";
+import { appendFileSync } from 'fs';
 
 export function calculateAvgColorsOfRegions(canvasContext: CanvasRenderingContext2D, regions: Bounds[]) {
     return regions.map((region) => {
@@ -29,10 +30,10 @@ export function calculateAvgColorsOfRegions(canvasContext: CanvasRenderingContex
     });
 }
 
-export function colorsToArray(colors: RGBA[]): Array<number> {
-    return flatten<number>(colors.map((color => color.toArray())));
+export function colorsToArray(colors: RGBA[], alpha = false): Array<number> {
+    return flatten<number>(colors.map((color => color.toArray(alpha))));
 }
 
-export function colorsToBuffer(colors: RGBA[]): Buffer {
-    return Buffer.from(colorsToArray(colors));
+export function colorsToBuffer(colors: RGBA[], alpha = false): Buffer {
+    return Buffer.from(colorsToArray(colors, alpha));
 }
