@@ -43,7 +43,7 @@ export default class Application extends React.Component<{}, State> {
             this.updateDataChannel(
                 nextState.optionValues.port,
                 {
-                    baudRate: (typeof nextBaudRate === 'string') ? Number.parseInt(nextBaudRate) as BaudRate : nextBaudRate,
+                    baudRate: (typeof nextBaudRate === 'string') ? (Number.parseInt(nextBaudRate) as BaudRate) : nextBaudRate,
                 }
             );
         }

@@ -31,13 +31,16 @@
     "files": [
       {
         "from": "dist",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       "package.json"
     ],
     "linux": {
       "category": "Recorder"
-    }
+    },
+    "buildDependenciesFromSource": true
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
