@@ -2,7 +2,7 @@
   "name": "ambinight",
   "version": "0.2.0",
   "description": "An ambilight client",
-  "main": "./dist/main.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "start:main": "NODE_ENV=development webpack --config build/webpack.config.main.js && electron ./dist/main.js",
@@ -10,6 +10,8 @@
     "build:renderer": "NODE_ENV=production webpack --config build/webpack.config.renderer.js",
     "build:main": "NODE_ENV=production webpack --config build/webpack.config.main.js",
     "build": "npm run build:renderer && npm run build:main",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "postinstall": "electron-rebuild"
   },
   "repository": "",
@@ -19,6 +21,24 @@
   ],
   "author": "Ruslan Mullayanov",
   "license": "CC0-1.0",
+  "build": {
+    "appId": "ru.app.ambinight",
+    "productName": "Ambinight",
+    "directories": {
+      "buildResources": "assets/images",
+      "output": "out"
+    },
+    "files": [
+      {
+        "from": "dist",
+        "filter": ["**/*"]
+      },
+      "package.json"
+    ],
+    "linux": {
+      "category": "Recorder"
+    }
+  },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
@@ -36,6 +56,7 @@
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
     "electron": "^11.1.1",
+    "electron-builder": "^22.9.1",
     "electron-rebuild": "^2.3.4",
     "html-webpack-plugin": "^4.5.1",
     "less": "^4.1.0",

@@ -48,7 +48,11 @@ function createWindow() {
     mainWindow.hide();
   });
 
-  mainWindow.loadURL(isDev ? 'http://localhost:8080/' : `${APP_SCHEMA}/index.html`);
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:8080/');
+  } else {
+    mainWindow.loadFile('index.html');
+  }
 }
 
 function prepareApp() {
@@ -56,7 +60,7 @@ function prepareApp() {
   app.commandLine.appendSwitch("disable-background-timer-throttling");
 
   protocol.registerFileProtocol(APP_PROTOCOL, function (request, callback) {
-    const { groups: url } = /^(?<protocol>[-\w]+):\/\/\/(?<path>.*)$/.exec(request.url) || {};
+    const { groups: url } = /^(?<protocol>[-\w]+):\/\/(?<path>.*)$/.exec(request.url) || {};
     callback({
       path: path.resolve(__dirname, url.path),
     });
@@ -92,6 +96,12 @@ function prepareApp() {
   });
 
   return true;
+}
+
+if (!isDev) {
+  protocol.registerSchemesAsPrivileged([
+    { scheme: APP_PROTOCOL, privileges: { secure: true, stream: true, standard: true } }
+  ]);
 }
 
 app.whenReady().then(() => {

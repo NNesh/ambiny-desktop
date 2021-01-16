@@ -27,7 +27,7 @@ const config = {
     output: {
         filename: 'renderer.js',
         path: path.resolve(__dirname, '..', 'dist'),
-        publicPath: isDev ? 'http://localhost:8080/' : 'ambinight:///',
+        publicPath: isDev ? 'http://localhost:8080/' : '',
     },
     externals: {
         'react/addons': true,
