@@ -34,11 +34,11 @@ export default function ControlPanel({
         const errors: any = {};
 
         if (values.horizontalNumber < 1) {
-            errors.ledHorNumber = 'LED count should be positive';
+            errors.horizontalNumber = 'LED count should be positive';
         }
 
         if (values.verticalNumber < 1) {
-            errors.ledVertNumber = 'LED count should be positive';
+            errors.verticalNumber = 'LED count should be positive';
         }
 
         return errors;
