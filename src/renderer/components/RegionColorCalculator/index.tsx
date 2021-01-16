@@ -26,7 +26,10 @@ export default class RegionColorCalculator extends React.Component<Props> {
 
         this.canvasContext = this.canvasRef.current.getContext('2d');
 
-        this.handleFrame();
+        const { provider } = this.props;
+        if (provider.isOpen()) {
+            this.handleFrame();
+        }
     }
 
     componentWillUnmount() {

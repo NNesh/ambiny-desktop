@@ -8,15 +8,13 @@ import SerialDataChannel from './modules/SerialDataChannel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './Application.less';
+import { NormalModuleReplacementPlugin } from 'webpack';
 
 export interface State {
-    currentScreen: string;
-    verticalNumber: number;
-    horizontalNumber: number;
-    verticalPadding: number;
-    horizontalPadding: number;
-    portPath: string;
-    availablePorts?: PortInfo[],
+    optionValues?: FormOptions;
+    availablePorts?: PortInfo[];
+    error?: Error;
+    // screens ?
 };
 
 export default class Application extends React.Component<{}, State> {
@@ -26,28 +24,22 @@ export default class Application extends React.Component<{}, State> {
         super(props);
 
         this.state = {
-            currentScreen: '',
-            verticalNumber: 12,
-            horizontalNumber: 12,
-            verticalPadding: 5,
-            horizontalPadding: 5,
-            portPath: '',
+            optionValues: null,
             availablePorts: null,
+            error: null,
         };
     }
 
     componentDidMount() {
-        const { portPath } = this.state;
-
-        this.updateAvailablePortsList();
-        portPath && this.serialDataChannel.open(portPath);
+        this.updateApplicationOptions();
     }
 
     shouldComponentUpdate(nextProps, nextState: State) {
-        const { portPath } = this.state;
+        const { port: nextPort, baudRate: nextBaudRate } = nextState.optionValues || {};
+        const { port, baudRate } = this.state.optionValues || {};
 
-        if (nextState.portPath && portPath != nextState.portPath) {
-            this.updateDataChannel(nextState.portPath);
+        if (port != nextPort || baudRate !== nextBaudRate) {
+            this.updateDataChannel(nextState.optionValues.port, { baudRate: nextBaudRate });
         }
 
         return true;
@@ -61,25 +53,28 @@ export default class Application extends React.Component<{}, State> {
         return this.serialDataChannel.getAvailableSerialPorts()
             .then((ports) => {
                 this.setState({
-                    availablePorts: ports || [], //.filter(port => !!port.productId),
-                    portPath: this.state.portPath || ports[0]?.path,
+                    availablePorts: (ports || []).filter(port => !!port.productId),
                 });
+
+                return ports;
             })
             .catch((error) => {
                 console.error(error);
                 this.setState({
                     availablePorts: null,
                 });
+
+                return [] as PortInfo[];
             });
     };
 
-    updateDataChannel = async (portPath: string, options?: any) => {
+    updateDataChannel = async (port: string, options?: any) => {
         try {
             if (this.serialDataChannel.isOpen()) {
                 await this.serialDataChannel.close();
             }
     
-            await this.serialDataChannel.open(portPath, options || { baudRate: 115200 });
+            await this.serialDataChannel.open(port, options);
         } catch (error) {
             console.error(error);
         } finally {
@@ -87,23 +82,44 @@ export default class Application extends React.Component<{}, State> {
         }
     };
 
+    updateApplicationOptions = async () => {
+        try {
+            const ports = await this.updateAvailablePortsList();
+
+            let savedOptions: FormOptions;
+            try {
+                savedOptions = JSON.parse(localStorage.get("options")) as FormOptions;
+            } catch (error) {
+                console.error('No saved options. Default values will be used');
+            }
+
+            this.setState({
+                optionValues: {
+                    port: savedOptions?.port || (ports?.length > 0 ? ports[0].path : ''),
+                    baudRate: savedOptions?.baudRate || 115200,
+                    horizontalNumber: savedOptions?.horizontalNumber || 12,
+                    verticalNumber: savedOptions?.verticalNumber || 12,
+                    horizontalPadding: savedOptions?.horizontalNumber || 5,
+                    verticalPadding: savedOptions?.verticalPadding || 5,
+                    frameRate: savedOptions?.frameRate || 15,
+                    resolution: savedOptions?.resolution || { width: 640, height: 320 },
+                    screenId: savedOptions?.screenId || '',
+                },
+                error: null,
+            });
+        } catch (error) {
+            this.setState({ error });
+        }
+    };
+
     handleChangeScreen = (values: FormOptions) => {
-        const {
-            screen,
-            ledHorNumber,
-            ledVertNumber,
-            vertPadding,
-            horPadding,
-            port,
-        } = values;
+        const { optionValues } = this.state;
+        if (optionValues && values.port !== optionValues.port) {
+
+        }
 
         this.setState({
-            currentScreen: screen,
-            verticalNumber: ledVertNumber,
-            horizontalNumber: ledHorNumber,
-            verticalPadding: vertPadding,
-            horizontalPadding: horPadding,
-            portPath: port,
+            optionValues: values,
         });
     };
 
@@ -111,22 +127,41 @@ export default class Application extends React.Component<{}, State> {
         stream: videoStream,
         screen: screen,
         availableScreens: screens,
+        error,
     }: ScerencastContentParams) => {
         const {
-            horizontalNumber,
-            verticalNumber,
-            horizontalPadding,
-            verticalPadding,
             availablePorts,
+            optionValues,
         } = this.state;
 
-        if (screens?.length === 0 || !availablePorts) {
+        if (screens?.length === 0 || !optionValues || !availablePorts) {
             return (
                 <div className="Application_Placeholder">
-                    Getting screens and available COM ports...
+                    Application initializing...
                 </div>
-            )
+            );
         }
+
+        if (optionValues?.screenId && !screen && error) {
+            // TODO: move to a handler
+            this.setState({
+                optionValues: {
+                    ...optionValues,
+                    screenId: null,
+                },
+            });
+
+            <div className="Application_Placeholder">
+                Unable to get screen. Trying to get another screen...
+            </div>
+        }
+
+        const {
+            horizontalNumber,
+            horizontalPadding,
+            verticalNumber,
+            verticalPadding,
+        } = optionValues;
 
         return (
             <Fragment>
@@ -147,11 +182,7 @@ export default class Application extends React.Component<{}, State> {
                     <ControlPanel
                         onUpdateOptions={this.handleChangeScreen}
                         screens={screens}
-                        selectedScreenId={screen}
-                        initialLedVertNumber={horizontalNumber}
-                        initialLedHorNumber={verticalNumber}
-                        initialHorPadding={horizontalPadding}
-                        initialVertPadding={verticalPadding}
+                        initialValues={optionValues}
                         availablePorts={availablePorts}
                     />
                 </div>
@@ -160,11 +191,11 @@ export default class Application extends React.Component<{}, State> {
     };
 
     render() {
-        const { currentScreen } = this.state;
+        const { optionValues } = this.state;
 
         return (
             <div className="Application">
-                <Screencast screen={currentScreen} autoRequest>
+                <Screencast screen={optionValues?.screenId} autoRequest>
                     {this.renderScreencastContent}
                 </Screencast>
             </div>

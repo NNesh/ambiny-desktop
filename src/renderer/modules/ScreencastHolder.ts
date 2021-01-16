@@ -59,8 +59,12 @@ export default class ScreencastHolder extends EventEmitter {
         return this._currentScreen;
     }
 
+    static getScreens = () => {
+        return window.electronApi.getScreenSources();
+    };
+
     getScreen = async (id?: string) => {
-        const sources = await window.electronApi.getScreenSources();
+        const sources = await ScreencastHolder.getScreens();
 
         this._screens = sources;
 

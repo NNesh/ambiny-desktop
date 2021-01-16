@@ -4,35 +4,21 @@ import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { Form,  } from 'react-bootstrap';
 import { DesktopCapturerSource } from 'electron';
 import { PortInfo } from 'serialport';
+import { LEDOptions, PortOptions, ScreenOptions } from '../../classes/types';
 
-export interface FormOptions {
-    screen?: string,
-    ledVertNumber: number,
-    ledHorNumber: number,
-    vertPadding: number,
-    horPadding: number,
-    port: string,
-};
+export type FormOptions = ScreenOptions & LEDOptions & PortOptions;
 
 export interface Props {
     screens?: DesktopCapturerSource[];
-    selectedScreenId?: string;
-    initialLedVertNumber: number;
-    initialLedHorNumber: number;
-    initialHorPadding: number,
-    initialVertPadding: number,
-    availablePorts: PortInfo[],
+    initialValues: FormOptions;
+    availablePorts: PortInfo[];
     onUpdateOptions: (values: FormOptions) => void;
 };
 
 
 export default function ControlPanel({
     screens,
-    selectedScreenId,
-    initialLedVertNumber = 12,
-    initialLedHorNumber = 12,
-    initialHorPadding = 0,
-    initialVertPadding = 0,
+    initialValues,
     availablePorts,
     onUpdateOptions,
 }: Props) {
@@ -44,26 +30,14 @@ export default function ControlPanel({
         return availablePorts.map(port => <option key={port.path} value={port.path}>{port.path}</option>)
     }, [availablePorts]);
 
-    const initialValues = useMemo(
-        (): FormOptions => ({
-            screen: selectedScreenId,
-            ledVertNumber: initialLedVertNumber,
-            ledHorNumber: initialLedHorNumber,
-            vertPadding: initialVertPadding,
-            horPadding: initialHorPadding,
-            port: '',
-        }),
-        []
-    );
-
     const validate = useCallback((values: FormOptions) => {
         const errors: any = {};
 
-        if (values.ledHorNumber < 1) {
+        if (values.horizontalNumber < 1) {
             errors.ledHorNumber = 'LED count should be positive';
         }
 
-        if (values.ledVertNumber < 1) {
+        if (values.verticalNumber < 1) {
             errors.ledVertNumber = 'LED count should be positive';
         }
 
@@ -108,80 +82,80 @@ export default function ControlPanel({
                 <Form.Group controlId="formScreen">
                     <Form.Label>Selected screen</Form.Label>
                     <Form.Control
-                        name="screen"
+                        name="screenId"
                         as="select"
-                        value={values.screen}
+                        value={values.screenId}
                         onChange={customChangeHandler}
                         onBlur={handleBlur}
-                        isInvalid={!!errors.screen}
+                        isInvalid={!!errors.screenId}
                         custom
                     >
                         {screenOptions}
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
-                        {errors.screen}
+                        {errors.screenId}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formLedHorNumber">
                     <Form.Label>LED horizontal number</Form.Label>
                     <Form.Control
                         type="number"
-                        name="ledHorNumber"
+                        name="horizontalNumber"
                         min={0}
-                        value={values.ledHorNumber}
+                        value={values.horizontalNumber}
                         onChange={customChangeHandler}
                         onBlur={handleBlur}
-                        isInvalid={!!errors.ledHorNumber}
+                        isInvalid={!!errors.horizontalNumber}
                     />
                     <Form.Control.Feedback type="invalid">
-                        {errors.ledHorNumber}
+                        {errors.horizontalNumber}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formLedVertNumber">
                     <Form.Label>LED vertical number</Form.Label>
                     <Form.Control
                         type="number"
-                        name="ledVertNumber"
+                        name="verticalNumber"
                         min={0}
-                        value={values.ledVertNumber}
+                        value={values.verticalNumber}
                         onChange={customChangeHandler}
                         onBlur={handleBlur}
-                        isInvalid={!!errors.ledVertNumber}
+                        isInvalid={!!errors.verticalNumber}
                     />
                     <Form.Control.Feedback type="invalid">
-                        {errors.ledVertNumber}
+                        {errors.verticalNumber}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formHorPadding">
                     <Form.Label>LED horizontal padding</Form.Label>
                     <Form.Control
                         type="range"
-                        name="horPadding"
+                        name="horizontalPadding"
                         min={5}
                         max={100}
-                        value={values.horPadding}
+                        value={values.horizontalPadding}
                         onChange={customChangeHandler}
                         onBlur={handleBlur}
-                        isInvalid={!!errors.horPadding}
+                        isInvalid={!!errors.horizontalPadding}
                     />
                     <Form.Control.Feedback type="invalid">
-                        {errors.horPadding}
+                        {errors.horizontalPadding}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formVertPadding">
                     <Form.Label>LED vertical padding</Form.Label>
                     <Form.Control
                         type="range"
-                        name="vertPadding"
+                        name="verticalPadding"
                         min={5}
                         max={100}
-                        value={values.vertPadding}
+                        value={values.verticalPadding}
                         onChange={customChangeHandler}
                         onBlur={handleBlur}
-                        isInvalid={!!errors.vertPadding}
+                        isInvalid={!!errors.verticalPadding}
                     />
                     <Form.Control.Feedback type="invalid">
-                        {errors.vertPadding}
+                        {errors.verticalPadding}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formPort">
