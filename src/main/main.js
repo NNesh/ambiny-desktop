@@ -7,6 +7,7 @@ const APP_SCHEMA = `${APP_PROTOCOL}://`;
 const isDev = process.env.NODE_ENV === 'development';
 
 const trayIcon = 'icon64x64.png';
+const windowIcon = 'icon64x64.png';
 let appTray,
     mainWindow,
     appWillClose = false;
@@ -27,6 +28,7 @@ function createWindow() {
     height: windowHeight,
     x: Math.floor(openScreen.bounds.x + openScreen.bounds.width / 2 - windowWidth / 2),
     y: Math.floor(openScreen.bounds.y + openScreen.bounds.height / 2 - windowHeight / 2),
+    icon: path.resolve(__dirname, 'images', windowIcon),
     webPreferences: {
       preload: path.resolve(__dirname, 'preload.js'),
       nodeIntegration: true,
