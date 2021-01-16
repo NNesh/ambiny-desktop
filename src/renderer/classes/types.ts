@@ -13,6 +13,8 @@ export interface ScreenResolution {
     height: number;
 };
 
+export type BaudRate = 115200|57600|38400|19200|9600;
+
 export interface ScreenOptions {
     screenId: string;
     resolution: ScreenResolution;
@@ -21,7 +23,7 @@ export interface ScreenOptions {
 
 export interface PortOptions {
     port: string;
-    baudRate: 115200|57600|38400|19200|9600;
+    baudRate: BaudRate;
 };
 
 export interface LEDOptions {

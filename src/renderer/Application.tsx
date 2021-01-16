@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './Application.less';
 import { NormalModuleReplacementPlugin } from 'webpack';
+import { BaudRate } from './classes/types';
 
 export interface State {
     optionValues?: FormOptions;
@@ -39,7 +40,12 @@ export default class Application extends React.Component<{}, State> {
         const { port, baudRate } = this.state.optionValues || {};
 
         if (port != nextPort || baudRate !== nextBaudRate) {
-            this.updateDataChannel(nextState.optionValues.port, { baudRate: nextBaudRate });
+            this.updateDataChannel(
+                nextState.optionValues.port,
+                {
+                    baudRate: (typeof nextBaudRate === 'string') ? Number.parseInt(nextBaudRate) as BaudRate : nextBaudRate,
+                }
+            );
         }
 
         return true;
@@ -113,11 +119,6 @@ export default class Application extends React.Component<{}, State> {
     };
 
     handleChangeScreen = (values: FormOptions) => {
-        const { optionValues } = this.state;
-        if (optionValues && values.port !== optionValues.port) {
-
-        }
-
         this.setState({
             optionValues: values,
         });

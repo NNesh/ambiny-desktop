@@ -15,6 +15,7 @@ export interface Props {
     onUpdateOptions: (values: FormOptions) => void;
 };
 
+const baudRates = [115200, 57600, 38400, 19200, 9600];
 
 export default function ControlPanel({
     screens,
@@ -30,6 +31,10 @@ export default function ControlPanel({
         return availablePorts.map(port => <option key={port.path} value={port.path}>{port.path}</option>)
     }, [availablePorts]);
 
+    const baudRateOptions = useMemo(() => {
+        return baudRates.map(baudRate => <option key={baudRate} value={baudRate}>{baudRate}</option>)
+    }, [baudRates]);
+
     const validate = useCallback((values: FormOptions) => {
         const errors: any = {};
 
@@ -44,17 +49,9 @@ export default function ControlPanel({
         return errors;
     }, []);
 
-    const handleOptionsUpdating = useCallback((values, { setSubmitting, setTouched }: FormikHelpers<any>) => {
+    const handleOptionsUpdating = useCallback((values, { setSubmitting, setTouched }: FormikHelpers<FormOptions>) => {
         onUpdateOptions(values);
         setSubmitting(false);
-        setTouched({
-            screen: false,
-            ledHorNumber: false,
-            ledVertNumber: false,
-            horPadding: false,
-            vertPadding: false,
-            port: false,
-        });
     }, [onUpdateOptions]);
 
     const renderForm = useCallback((options: FormikProps<FormOptions>) => {
@@ -173,6 +170,24 @@ export default function ControlPanel({
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
                         {errors.port}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formBaudRate">
+                    <Form.Label>Baud Rate</Form.Label>
+                    <Form.Control
+                        name="baudRate"
+                        as="select"
+                        type="number"
+                        value={values.baudRate}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isInvalid={!!errors.baudRate}
+                        custom
+                    >
+                        {baudRateOptions}
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.baudRate}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <button ref={submitButtonRef} className="hidden" type="submit"></button>
