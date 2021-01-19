@@ -196,7 +196,7 @@ export default class Application extends React.Component<{}, State> {
 
         return (
             <div className="Application">
-                <Screencast screen={optionValues?.screenId} autoRequest>
+                <Screencast screen={optionValues?.screenId} frameRate={optionValues?.frameRate || 15} autoRequest>
                     {this.renderScreencastContent}
                 </Screencast>
             </div>

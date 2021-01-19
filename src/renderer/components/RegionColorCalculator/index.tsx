@@ -62,12 +62,9 @@ export default class RegionColorCalculator extends React.Component<Props> {
                 const { provider, onError } = this.props;
 
                 // TODO: implement protocol in another class (interface)
-                const bodyValues = colorsToArray(colors, false);
-                const uint16Buffer = Uint16Array.from([12593, bodyValues.length, ...bodyValues]);
-
-                provider.send(Buffer.from(uint16Buffer.buffer))
+                provider.send(colorsToBuffer(colors, false))
                     .then(() => {
-                        this.handleFrameTimeoutId = setTimeout(this.handleFrame, 120);
+                        this.handleFrameTimeoutId = setTimeout(this.handleFrame, 50);
                     })
                     .catch((error) => {
                         console.log('Provider send:', error);

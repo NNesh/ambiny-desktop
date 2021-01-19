@@ -46,6 +46,10 @@ export default function ControlPanel({
             errors.verticalNumber = 'LED count should be positive';
         }
 
+        if (values.frameRate < 1) {
+            errors.frameRate = 'Frame rate should be positive';
+        }
+
         return errors;
     }, []);
 
@@ -91,6 +95,21 @@ export default function ControlPanel({
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
                         {errors.screenId}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formFrameRate">
+                    <Form.Label>Frame rate</Form.Label>
+                    <Form.Control
+                        type="number"
+                        name="frameRate"
+                        min={0}
+                        value={values.frameRate}
+                        onChange={customChangeHandler}
+                        onBlur={handleBlur}
+                        isInvalid={!!errors.frameRate}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.frameRate}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formLedHorNumber">

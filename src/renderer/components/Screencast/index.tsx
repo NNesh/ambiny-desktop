@@ -15,6 +15,7 @@ export interface ScreencastProps {
     screen?: string;
     autoRequest?: boolean;
     children: (params: ChildrenParams) => ReactNode;
+    frameRate: number;
 }
 
 export interface State {
@@ -49,9 +50,11 @@ export default class Screencast extends React.Component<ScreencastProps, State> 
     }
 
     shouldComponentUpdate(nextProps: ScreencastProps): boolean {
-        if (this.props.screen && !nextProps.screen) {
+        const { screen, frameRate } = this.props;
+        if (screen && !nextProps.screen) {
             this.screencastHolder.dispose();
-        } else if (this.props.screen !== nextProps.screen) {
+        } else if ((screen !== nextProps.screen) || (frameRate !== nextProps.frameRate)) {
+            this.screencastHolder.frameRate = nextProps.frameRate;
             this.requestMediaStream(nextProps.screen);
             return false;
         }

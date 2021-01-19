@@ -11,6 +11,7 @@ export interface Options {
     minWidth?: number,
     maxHeight?: number,
     minHeight?: number,
+    frameRate?: number,
 };
 
 export default class ScreencastHolder extends EventEmitter {
@@ -21,6 +22,7 @@ export default class ScreencastHolder extends EventEmitter {
     private minWidth = 320;
     private maxHeight = 360;
     private minHeight = 200;
+    private _frameRate = 15;
 
     constructor(options: Options = {}) {
         super();
@@ -30,6 +32,7 @@ export default class ScreencastHolder extends EventEmitter {
             minHeight = 0,
             maxWidth = 0,
             minWidth = 0,
+            frameRate = 15,
         } = options;
 
         if (maxWidth > minWidth && maxHeight > minHeight) {
@@ -38,6 +41,8 @@ export default class ScreencastHolder extends EventEmitter {
             this.maxWidth = maxWidth;
             this.minWidth = minWidth;
         }
+
+        this.frameRate = frameRate || 15;
     }
 
     set currentStream(value: MediaStream) {
@@ -57,6 +62,18 @@ export default class ScreencastHolder extends EventEmitter {
 
     get currentScreen(): DesktopCapturerSource {
         return this._currentScreen;
+    }
+
+    set frameRate(value: number) {
+        if (value <= 0) {
+            throw new Error('Frame rate should be positive');
+        }
+
+        this._frameRate = value;
+    }
+
+    get frameRate(): number {
+        return this._frameRate;
     }
 
     static getScreens = () => {
@@ -94,7 +111,7 @@ export default class ScreencastHolder extends EventEmitter {
                 minHeight: this.minHeight,
                 maxHeight: this.maxHeight,
                 minFrameRate: 8,
-                maxFrameRate: 12,
+                maxFrameRate: this.frameRate,
             },
         };
 
