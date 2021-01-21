@@ -5,10 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "start:main": "NODE_ENV=development webpack --config build/webpack.config.main.js && electron ./dist/main.js",
-    "start:renderer": "NODE_ENV=development webpack serve --config build/webpack.config.renderer.js",
-    "build:renderer": "NODE_ENV=production webpack --config build/webpack.config.renderer.js",
-    "build:main": "NODE_ENV=production webpack --config build/webpack.config.main.js",
+    "start:main": "cross-env NODE_ENV=development webpack --config build/webpack.config.main.js && electron ./dist/main.js",
+    "start:renderer": "cross-env NODE_ENV=development webpack serve --config build/webpack.config.renderer.js",
+    "build:renderer": "cross-env NODE_ENV=production webpack --config build/webpack.config.renderer.js",
+    "build:main": "cross-env NODE_ENV=production webpack --config build/webpack.config.main.js",
     "build": "npm run build:renderer && npm run build:main",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
@@ -40,7 +40,9 @@
     "linux": {
       "category": "Recorder"
     },
-    "buildDependenciesFromSource": true
+    "nodeGypRebuild": false,
+    "buildDependenciesFromSource": true,
+    "npmRebuild": false
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -57,6 +59,7 @@
     "@types/serialport": "^8.0.1",
     "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^7.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^5.0.1",
     "electron": "^11.1.1",
     "electron-builder": "^22.9.1",
