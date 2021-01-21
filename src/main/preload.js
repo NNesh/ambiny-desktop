@@ -22,12 +22,24 @@ SerialPortProvider.prototype.open = function(portPath, options) {
 };
 
 SerialPortProvider.prototype.isOpen = function() {
-    return !!this.conn;
+    return this.conn && this.conn.isOpen;
 };
 
 SerialPortProvider.prototype.close = function() {
-    this.conn.close();
-    this.conn = null;
+    if (!this.conn) {
+        return Promise.resolve();
+    }
+
+    return new Promise(function(resolve, reject) {
+        this.conn.close(function(error) {
+            if (error) {
+                reject(error);
+            } else {
+                this.conn = null;
+                resolve();
+            }
+        });
+    });
 };
 
 SerialPortProvider.prototype.send = function(data) {
