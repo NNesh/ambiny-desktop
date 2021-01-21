@@ -55,11 +55,19 @@ export default class Application extends React.Component<{}, State> {
         this.serialDataChannel.close().catch(console.error);
     }
 
+    filterPorts = (ports: PortInfo[]) => {
+        if (ports?.length > 0) {
+            return ports[0].path?.includes('/') ? ports.filter(port => !!port.productId) : ports;
+        }
+
+        return ports;
+    };
+
     updateAvailablePortsList = () => {
         return this.serialDataChannel.getAvailableSerialPorts()
             .then((ports) => {
                 this.setState({
-                    availablePorts: (ports || []).filter(port => !!port.productId),
+                    availablePorts: this.filterPorts(ports || []),
                 });
 
                 return ports;
@@ -79,7 +87,7 @@ export default class Application extends React.Component<{}, State> {
             if (this.serialDataChannel.isOpen()) {
                 await this.serialDataChannel.close();
             }
-    
+
             await this.serialDataChannel.open(port, options);
         } catch (error) {
             console.error(error);
