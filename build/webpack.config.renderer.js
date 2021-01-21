@@ -44,7 +44,7 @@ if (isDev) {
         hot: true
     };
 
-    config.devtool = 'eval-source-map';
+    config.devtool = 'inline-source-map';
 }
 
 module.exports = merge(base, config);
