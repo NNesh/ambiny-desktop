@@ -47,7 +47,7 @@ export default class Application extends React.Component<{}, State> {
     }
 
     componentDidMount() {
-        this.updateApplicationOptions();
+        this.prepareApplicationOptions();
     }
 
     shouldComponentUpdate(nextProps, nextState: State) {
@@ -113,7 +113,7 @@ export default class Application extends React.Component<{}, State> {
         }
     };
 
-    updateApplicationOptions = async () => {
+    prepareApplicationOptions = async () => {
         try {
             const ports = await this.updateAvailablePortsList();
 
