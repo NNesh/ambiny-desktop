@@ -28,6 +28,9 @@ export default class Application extends React.Component<{}, State> {
             availablePorts: null,
             error: null,
         };
+
+        this.serialDataChannel.on('close', this.handleClosedConnection);
+        this.serialDataChannel.on('devicechanged', this.handleDeviceChanged);
     }
 
     componentDidMount() {
@@ -52,6 +55,8 @@ export default class Application extends React.Component<{}, State> {
 
     componentWillUnmount() {
         this.serialDataChannel.close().catch(console.error);
+        this.serialDataChannel.off('close', this.handleClosedConnection);
+        this.serialDataChannel.off('devicechanged', this.handleDeviceChanged);
     }
 
     filterPorts = (ports: PortInfo[]) => {
@@ -88,7 +93,6 @@ export default class Application extends React.Component<{}, State> {
             }
 
             await this.serialDataChannel.open(port, options);
-            this.serialDataChannel.on('close', this.handleClosedConnection);
         } catch (error) {
             console.error(error);
         } finally {
@@ -109,7 +113,7 @@ export default class Application extends React.Component<{}, State> {
 
             this.setState({
                 optionValues: {
-                    port: savedOptions?.port || (ports?.length > 0 ? ports[0].path : ''),
+                    port: savedOptions?.port || ports[0]?.path || '',
                     baudRate: savedOptions?.baudRate || 115200,
                     horizontalNumber: savedOptions?.horizontalNumber || 12,
                     verticalNumber: savedOptions?.verticalNumber || 12,
@@ -151,6 +155,39 @@ export default class Application extends React.Component<{}, State> {
         if (error?.disconnected) {
             this.forceUpdate();
         }
+    };
+
+    handleDeviceChanged = (newDevices: PortInfo[]) => {
+        const { optionValues } = this.state;
+
+        if (!optionValues) {
+            return;
+        }
+
+        const { port } = optionValues;
+
+        if (port) {
+            const currentDevice = newDevices.find(device => port === device.path);
+            if (!currentDevice) {
+                this.setState({
+                    optionValues: {
+                        ...optionValues,
+                        port: newDevices[0]?.path || '',
+                    }
+                });
+            }
+        } else {
+            this.setState({
+                optionValues: {
+                    ...optionValues,
+                    port: newDevices[0]?.path || '',
+                }
+            });
+        }
+
+        this.setState({
+            availablePorts: newDevices,
+        });
     };
 
     renderScreencastContent = ({
