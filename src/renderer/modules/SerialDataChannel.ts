@@ -18,7 +18,7 @@ export default class SerialDataChannel extends EventEmitter implements DataChann
 
     getAvailableSerialPorts = () => {
         return this.provider.list();
-    }
+    };
 
     send = (data: string | number[] | Buffer): Promise<any> => {
         return this.provider.send(data);
