@@ -30,8 +30,10 @@ SerialPortProvider.prototype.close = function() {
         return Promise.resolve();
     }
 
+    const connection = this.conn;
+
     return new Promise(function(resolve, reject) {
-        this.conn.close(function(error) {
+        connection.close(function(error) {
             if (error) {
                 reject(error);
             } else {
