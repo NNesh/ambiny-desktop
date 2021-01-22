@@ -8,6 +8,11 @@ function SerialPortProvider() {
 SerialPortProvider.prototype.open = function(portPath, options) {
     let self = this;
     return new Promise(function(resolve, reject) {
+        if (self.conn && self.conn.isOpen) {
+            reject('Please, close the last connection');
+            return;
+        }
+
         self.conn = new SerialPort(portPath, { ...options, autoOpen: false });
         self.conn.open(function(err) {
             if (err) {
