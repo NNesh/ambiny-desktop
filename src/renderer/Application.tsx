@@ -224,14 +224,6 @@ export default class Application extends React.Component<{}, State> {
         }
 
         if (optionValues?.screenId && !screen && error) {
-            // TODO: move to a handler
-            this.setState({
-                optionValues: {
-                    ...optionValues,
-                    screenId: '',
-                },
-            });
-
             return (
                 <div className="Application_Placeholder">
                     Unable to get screen. Trying to get another screen...
