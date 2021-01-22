@@ -1,12 +1,14 @@
-import SerialPort from "serialport";
-
-export interface DataChannel<D, R> {
-    send: (data: D) => Promise<R | void>;
-    write: (count?: number) => Promise<R>;
+export interface Openable {
     open: (...args: any) => Promise<any>;
     close: (...args: any) => Promise<any>;
     isOpen: () => boolean;
 };
+
+export interface Sendable<D, R> {
+    send: (data: D) => Promise<R | void>;
+}
+
+export interface DataChannel<D, R> extends Sendable<D, R>, Openable {};
 
 export interface ScreenResolution {
     width: number;
