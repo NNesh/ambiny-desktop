@@ -51,12 +51,13 @@ export default class Screencast extends React.Component<ScreencastProps, State> 
 
     shouldComponentUpdate(nextProps: ScreencastProps): boolean {
         const { screen, frameRate } = this.props;
-        if (screen && !nextProps.screen) {
+        if ((screen !== nextProps.screen) || (frameRate !== nextProps.frameRate)) {
             this.screencastHolder.dispose();
-        } else if ((screen !== nextProps.screen) || (frameRate !== nextProps.frameRate)) {
-            this.screencastHolder.frameRate = nextProps.frameRate;
-            this.requestMediaStream(nextProps.screen);
-            return false;
+            if (nextProps.screen) {
+                this.screencastHolder.frameRate = nextProps.frameRate;
+                this.requestMediaStream(nextProps.screen);
+                return false;
+            }
         }
 
         return true;

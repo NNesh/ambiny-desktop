@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { PortInfo } from 'serialport';
+import memoizeOne from 'memoize-one';
 import { convertBaudRate } from './helpers/convert';
 import Screencast, { ChildrenParams as ScerencastContentParams } from './components/Screencast';
 import VideoPreview from './components/VideoPreview';
@@ -17,8 +18,13 @@ export interface State {
     // screens ?
 };
 
+interface MemoizedFormOption {
+    (option?: FormOptions, screenId?: string): FormOptions;
+};
+
 export default class Application extends React.Component<{}, State> {
     private serialDataChannel = new SerialDataChannel();
+    private memoizedInitialValues: MemoizedFormOption;
 
     constructor(props) {
         super(props);
@@ -31,6 +37,13 @@ export default class Application extends React.Component<{}, State> {
 
         this.serialDataChannel.on('close', this.handleClosedConnection);
         this.serialDataChannel.on('devicechanged', this.handleDeviceChanged);
+
+        this.memoizedInitialValues = memoizeOne<MemoizedFormOption>((options?: FormOptions, screenId?: string): FormOptions => {
+            return {
+                ...(options || {}),
+                screenId: screenId || '',
+            } as FormOptions;
+        });
     }
 
     componentDidMount() {
@@ -192,9 +205,10 @@ export default class Application extends React.Component<{}, State> {
 
     renderScreencastContent = ({
         stream: videoStream,
-        screen: screen,
+        screen,
         availableScreens: screens,
         error,
+        requesting,
     }: ScerencastContentParams) => {
         const {
             availablePorts,
@@ -214,13 +228,15 @@ export default class Application extends React.Component<{}, State> {
             this.setState({
                 optionValues: {
                     ...optionValues,
-                    screenId: null,
+                    screenId: '',
                 },
             });
 
-            <div className="Application_Placeholder">
-                Unable to get screen. Trying to get another screen...
-            </div>
+            return (
+                <div className="Application_Placeholder">
+                    Unable to get screen. Trying to get another screen...
+                </div>
+            );
         }
 
         const {
@@ -229,6 +245,8 @@ export default class Application extends React.Component<{}, State> {
             verticalNumber,
             verticalPadding,
         } = optionValues;
+
+        const initialValues = requesting ? optionValues : this.memoizedInitialValues(optionValues, screen);
 
         return (
             <Fragment>
@@ -254,7 +272,7 @@ export default class Application extends React.Component<{}, State> {
                     <ControlPanel
                         onUpdateOptions={this.handleChangeScreen}
                         screens={screens}
-                        initialValues={optionValues}
+                        initialValues={initialValues}
                         availablePorts={availablePorts}
                         onConnect={this.handleConnect}
                         connected={this.serialDataChannel.isOpen()}
