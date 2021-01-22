@@ -117,7 +117,7 @@ export default class ScreencastHolder extends EventEmitter {
 
         const stream = await navigator.mediaDevices.getUserMedia({
             // @ts-ignore
-            video: videoConstraints, 
+            video: videoConstraints,
             audio: false,
         });
 
@@ -131,8 +131,8 @@ export default class ScreencastHolder extends EventEmitter {
             const screen = await this.getScreen(id);
             const stream = await this.requestMedia(screen.id);
 
-            this.currentStream = stream;
             this._currentScreen = screen;
+            this.currentStream = stream;
         } catch (error) {
             this.currentStream = null;
             this._currentScreen = null;
