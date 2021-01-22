@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useRef } from 'react';
 import debounce from 'lodash/debounce';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
-import { Form,  } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { DesktopCapturerSource } from 'electron';
 import { PortInfo } from 'serialport';
 import { LEDOptions, PortOptions, ScreenOptions } from '../../classes/types';
@@ -13,6 +13,8 @@ export interface Props {
     initialValues: FormOptions;
     availablePorts: PortInfo[];
     onUpdateOptions: (values: FormOptions) => void;
+    onConnect: () => void;
+    connected?: boolean;
 };
 
 const baudRates = [115200, 57600, 38400, 19200, 9600];
@@ -22,6 +24,8 @@ export default function ControlPanel({
     initialValues,
     availablePorts,
     onUpdateOptions,
+    onConnect,
+    connected = false,
 }: Props) {
     const screenOptions = useMemo(() => {
         return screens.map(screen => <option key={screen.id} value={screen.id}>{screen.name}</option>)
@@ -209,10 +213,13 @@ export default function ControlPanel({
                         {errors.baudRate}
                     </Form.Control.Feedback>
                 </Form.Group>
+                <Button type="button" onClick={onConnect} disabled={connected}>
+                    Connect
+                </Button>
                 <button ref={submitButtonRef} className="hidden" type="submit"></button>
             </Form>
         )
-    }, [screenOptions, portsOptions]);
+    }, [screenOptions, portsOptions, onConnect, connected]);
 
     return (
         <Formik

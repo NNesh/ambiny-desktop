@@ -1,5 +1,6 @@
 import { DataChannel } from "../classes/types";
 
+
 export default class SerialDataChannel implements DataChannel<string | number[] | Buffer, any> {
     private provider: SerialPortProvider;
 
@@ -30,5 +31,10 @@ export default class SerialDataChannel implements DataChannel<string | number[] 
 
     isOpen = (): boolean => {
         return this.provider.isOpen();
+    };
+
+    on = (event: string, callback: (data?: any) => void) => {
+        this.provider.on(event, callback);
+        return this;
     };
 }

@@ -10,6 +10,7 @@ declare global {
         isOpen: () => boolean;
         list: () => Promise<PortInfo[]>;
         flush: () => Promise<any>;
+        on(event: string, callback: (data?: any) => void): this;
     }
 
     interface ElectronAPI {

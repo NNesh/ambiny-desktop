@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { PortInfo } from 'serialport';
+import { convertBaudRate } from './helpers/convert';
 import Screencast, { ChildrenParams as ScerencastContentParams } from './components/Screencast';
 import VideoPreview from './components/VideoPreview';
 import ControlPanel, { FormOptions } from './components/ControlPanel';
@@ -8,8 +9,6 @@ import SerialDataChannel from './modules/SerialDataChannel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './Application.less';
-import { NormalModuleReplacementPlugin } from 'webpack';
-import { BaudRate } from './classes/types';
 
 export interface State {
     optionValues?: FormOptions;
@@ -43,7 +42,7 @@ export default class Application extends React.Component<{}, State> {
             this.updateDataChannel(
                 nextState.optionValues.port,
                 {
-                    baudRate: (typeof nextBaudRate === 'string') ? (Number.parseInt(nextBaudRate) as BaudRate) : nextBaudRate,
+                    baudRate: convertBaudRate(nextBaudRate),
                 }
             );
         }
@@ -89,6 +88,7 @@ export default class Application extends React.Component<{}, State> {
             }
 
             await this.serialDataChannel.open(port, options);
+            this.serialDataChannel.on('close', this.handleClosedConnection);
         } catch (error) {
             console.error(error);
         } finally {
@@ -130,6 +130,27 @@ export default class Application extends React.Component<{}, State> {
         this.setState({
             optionValues: values,
         });
+    };
+
+    handleConnect = () => {
+        const { port, baudRate } = this.state.optionValues || {};
+        this.updateDataChannel(
+            port,
+            {
+                baudRate: convertBaudRate(baudRate),
+            }
+        );
+    };
+
+    handleSendError = (error) => {
+        console.error(error);
+        this.handleConnect();
+    };
+
+    handleClosedConnection = (error) => {
+        if (error?.disconnected) {
+            this.forceUpdate();
+        }
     };
 
     renderScreencastContent = ({
@@ -183,7 +204,12 @@ export default class Application extends React.Component<{}, State> {
                         verticalPadding={verticalPadding}
                     >
                         {(videoElement, regions) => (
-                            <RegionColorCalculator videoElement={videoElement} regions={regions} provider={this.serialDataChannel} />
+                            <RegionColorCalculator
+                                videoElement={videoElement}
+                                regions={regions}
+                                provider={this.serialDataChannel}
+                                onError={this.handleConnect}
+                            />
                         )}
                     </VideoPreview>
                 </div>
@@ -193,6 +219,8 @@ export default class Application extends React.Component<{}, State> {
                         screens={screens}
                         initialValues={optionValues}
                         availablePorts={availablePorts}
+                        onConnect={this.handleConnect}
+                        connected={this.serialDataChannel.isOpen()}
                     />
                 </div>
             </Fragment>

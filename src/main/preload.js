@@ -80,6 +80,10 @@ SerialPortProvider.prototype.list = function() {
     return SerialPort.list();
 };
 
+SerialPortProvider.prototype.on = function(event, callback) {
+    this.conn.on(event, callback);
+    return this;
+}
 
 if (!window.electronApi) {
     window.electronApi = {};
