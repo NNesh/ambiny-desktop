@@ -74,7 +74,7 @@ export default class Application extends React.Component<{}, State> {
 
     filterPorts = (ports: PortInfo[]) => {
         if (ports?.length > 0) {
-            return ports[0].path?.includes('/') ? ports.filter(port => !!port.productId) : ports;
+            return ports[0].path?.includes('/dev') ? ports.filter(port => !!port.productId) : ports;
         }
 
         return ports;
@@ -199,7 +199,7 @@ export default class Application extends React.Component<{}, State> {
         }
 
         this.setState({
-            availablePorts: newDevices,
+            availablePorts: this.filterPorts(newDevices),
         });
     };
 
