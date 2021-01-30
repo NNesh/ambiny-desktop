@@ -2,14 +2,14 @@ import React, { useMemo, useCallback, useRef } from 'react';
 import debounce from 'lodash/debounce';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { Form, Button } from 'react-bootstrap';
-import { DesktopCapturerSource } from 'electron';
 import { PortInfo } from 'serialport';
 import { LEDOptions, PortOptions, ScreenOptions } from '../../classes/types';
+import Source from '../../classes/Source';
 
 export type FormOptions = ScreenOptions & LEDOptions & PortOptions;
 
 export interface Props {
-    screens?: DesktopCapturerSource[];
+    sources?: Source[];
     initialValues: FormOptions;
     availablePorts: PortInfo[];
     onUpdateOptions: (values: FormOptions) => void;
@@ -20,16 +20,16 @@ export interface Props {
 const baudRates = [115200, 57600, 38400, 19200, 9600];
 
 export default function ControlPanel({
-    screens,
+    sources,
     initialValues,
     availablePorts,
     onUpdateOptions,
     onConnect,
     connected = false,
 }: Props) {
-    const screenOptions = useMemo(() => {
-        return screens.map(screen => <option key={screen.id} value={screen.id}>{screen.name}</option>)
-    }, [screens]);
+    const sourcesOptions = useMemo(() => {
+        return sources.map(source => <option key={source.getId()} value={source.getId()}>{source.getName()}</option>)
+    }, [sources]);
 
     const portsOptions = useMemo(() => {
         return availablePorts.map(port => <option key={port.path} value={port.path}>{port.path}</option>)
@@ -87,18 +87,18 @@ export default function ControlPanel({
                 <Form.Group controlId="formScreen">
                     <Form.Label>Selected screen</Form.Label>
                     <Form.Control
-                        name="screenId"
+                        name="sourceId"
                         as="select"
-                        value={values.screenId}
+                        value={values.sourceId}
                         onChange={customChangeHandler}
                         onBlur={handleBlur}
-                        isInvalid={!!errors.screenId}
+                        isInvalid={!!errors.sourceId}
                         custom
                     >
-                        {screenOptions}
+                        {sourcesOptions}
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
-                        {errors.screenId}
+                        {errors.sourceId}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formFrameRate">
@@ -219,7 +219,7 @@ export default function ControlPanel({
                 <button ref={submitButtonRef} className="hidden" type="submit"></button>
             </Form>
         )
-    }, [screenOptions, portsOptions, onConnect, connected]);
+    }, [sourcesOptions, portsOptions, onConnect, connected]);
 
     return (
         <Formik
