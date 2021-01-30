@@ -1,6 +1,6 @@
 {
   "name": "ambinight",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "An ambilight client",
   "main": "main.js",
   "scripts": {
