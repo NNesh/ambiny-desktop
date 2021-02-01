@@ -201,13 +201,19 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
         const { source, availableSources, onChangeSource } = this.props;
         const { optionValues } = this.state;
 
-        if (values.sourceId && source?.getId() !== values.sourceId) {
+        if (
+            values.sourceId &&
+            (
+                source?.getId() !== values.sourceId ||
+                values.frameRate !== optionValues.frameRate
+            )
+        ) {
             onChangeSource(
                 availableSources.find(availableSource => values.sourceId === availableSource.getId()),
                 {
                     maxWidth: 360,
                     maxHeight: 220,
-                    maxFrameRate: optionValues.frameRate,
+                    maxFrameRate: values.frameRate,
                 }
             );
         }
