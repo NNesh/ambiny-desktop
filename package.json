@@ -1,6 +1,6 @@
 {
   "name": "ambinight",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "An ambilight client",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "build:renderer": "cross-env NODE_ENV=production webpack --config build/webpack.config.renderer.js",
     "build:main": "cross-env NODE_ENV=production webpack --config build/webpack.config.main.js",
     "build": "npm run build:renderer && npm run build:main",
-    "pack": "electron-builder --dir",
+    "pack": "npm run build && electron-builder --dir",
     "dist": "electron-builder",
     "postinstall": "electron-rebuild"
   },

@@ -62,7 +62,10 @@ export default class RegionColorCalculator extends React.Component<Props> {
                 const { provider, onError } = this.props;
 
                 // TODO: implement protocol in another class (interface)
-                provider.send(colorsToBuffer(colors, false))
+                const colorArr = colorsToArray(colors, false);
+                const rawMessage = Uint8Array.from([115, 121, 110, 99, 32, ...colorArr]);
+                const message = Buffer.from(rawMessage);
+                provider.send(message)
                     .then(() => {
                         this.handleFrameTimeoutId = setTimeout(this.handleFrame, 50);
                     })
