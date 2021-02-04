@@ -91,7 +91,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
         this.serialDataChannel.off('devicechanged', this.handleDeviceChanged);
     }
 
-    filterPorts = (ports: PortInfo[]) => {
+    filterPorts(ports: PortInfo[]) {
         if (ports?.length > 0) {
             return ports[0].path?.includes('/dev') ? ports.filter(port => !!port.productId) : ports;
         }
@@ -99,7 +99,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
         return ports;
     };
 
-    updateAvailablePortsList = () => {
+    updateAvailablePortsList() {
         return this.serialDataChannel.getAvailableSerialPorts()
             .then((ports) => {
                 this.setState({
@@ -118,7 +118,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
             });
     };
 
-    updateDataChannel = async (port: string, options?: any) => {
+    async updateDataChannel(port: string, options?: any) {
         try {
             if (this.serialDataChannel.isOpen()) {
                 await this.serialDataChannel.close();
