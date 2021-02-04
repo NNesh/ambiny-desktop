@@ -34,6 +34,21 @@ interface UpdateFormOptions {
     verticalPadding?: number;
 }
 
+const DEFAULT_RESOLUTIONS: ScreenResolution[] = [
+    { width: 400, height: 300 },
+    { width: 512, height: 384 },
+    { width: 640, height: 360 },
+    { width: 640, height: 480 },
+    { width: 960, height: 720 },
+    { width: 1280, height: 720 },
+    { width: 1280, height: 960 },
+    { width: 1600, height: 900 },
+    { width: 1600, height: 1200 },
+    { width: 1920, height: 1080 },
+    { width: 2560, height: 1440 },
+    { width: 3840, height: 2160 },
+];
+
 export default class Content extends React.Component<ScreencastChildrenParams, State> {
     private serialDataChannel = new SerialDataChannel();
     private memoizedInitialValues: MemoizedFormOption;
@@ -151,7 +166,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
                 horizontalPadding: savedOptions?.horizontalNumber || 5,
                 verticalPadding: savedOptions?.verticalPadding || 5,
                 frameRate: savedOptions?.frameRate || 15,
-                resolution: savedOptions?.resolution || { width: 360, height: 260 },
+                resolution: savedOptions?.resolution || { width: 640, height: 360 },
                 sourceId: savedOptions?.sourceId || '',
             };
 
@@ -205,14 +220,15 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
             values.sourceId &&
             (
                 source?.getId() !== values.sourceId ||
-                values.frameRate !== optionValues.frameRate
+                values.frameRate !== optionValues.frameRate ||
+                values.resolution !== optionValues.resolution
             )
         ) {
             onChangeSource(
                 availableSources.find(availableSource => values.sourceId === availableSource.getId()),
                 {
-                    maxWidth: 360,
-                    maxHeight: 220,
+                    maxWidth: values.resolution.width,
+                    maxHeight: values.resolution.height,
                     maxFrameRate: values.frameRate,
                 }
             );
@@ -340,6 +356,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
                         availablePorts={availablePorts}
                         onConnect={this.handleConnect}
                         connected={this.serialDataChannel.isOpen()}
+                        resolutions={DEFAULT_RESOLUTIONS}
                     />
                 </div>
             </div>

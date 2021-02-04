@@ -3,12 +3,14 @@ import debounce from 'lodash/debounce';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { Form, Button } from 'react-bootstrap';
 import { PortInfo } from 'serialport';
-import { LEDOptions, PortOptions, ScreenOptions } from '../../classes/types';
+import { LEDOptions, PortOptions, ScreenOptions, ScreenResolution } from '../../classes/types';
 import Source from '../../classes/Source';
+import ResolutionField from '../ResolutionField';
 
 export type FormOptions = ScreenOptions & LEDOptions & PortOptions;
 
 export interface Props {
+    resolutions: ScreenResolution[];
     sources?: Source[];
     initialValues: FormOptions;
     availablePorts: PortInfo[];
@@ -20,6 +22,7 @@ export interface Props {
 const baudRates = [115200, 57600, 38400, 19200, 9600];
 
 export default function ControlPanel({
+    resolutions,
     sources,
     initialValues,
     availablePorts,
@@ -66,10 +69,12 @@ export default function ControlPanel({
         const {
             values,
             errors,
-            touched,
+            // touched,
             handleChange,
             handleBlur,
             handleSubmit,
+            setFieldValue,
+            setFieldTouched,
             // isSubmitting,
         } = options;
 
@@ -80,6 +85,12 @@ export default function ControlPanel({
             debouncedSubmit();
             return handleChange(e);
         }, [debouncedSubmit]);
+
+        const handleChangeResolution = useCallback((name: string, resolution: ScreenResolution) => {
+            setFieldValue(name, resolution);
+            setFieldTouched(name, true);
+            debouncedSubmit();
+        }, [debouncedSubmit, setFieldValue]);
 
         return (
             <Form noValidate onSubmit={handleSubmit}>
@@ -99,6 +110,17 @@ export default function ControlPanel({
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
                         {errors.sourceId}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formResolution">
+                    <Form.Label>Frame rate</Form.Label>
+                    <ResolutionField
+                        name="resolution"
+                        onChange={handleChangeResolution}
+                        options={resolutions}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.resolution}
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formFrameRate">
@@ -219,7 +241,7 @@ export default function ControlPanel({
                 <button ref={submitButtonRef} className="hidden" type="submit"></button>
             </Form>
         )
-    }, [sourcesOptions, portsOptions, onConnect, connected]);
+    }, [sourcesOptions, portsOptions, resolutions, onConnect, connected]);
 
     return (
         <Formik

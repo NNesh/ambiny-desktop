@@ -17,6 +17,8 @@ export interface ScreenResolution {
 
 export type BaudRate = 115200|57600|38400|19200|9600;
 
+export type AspectRatio = '16:9' | '16:10' | '4:3';
+
 export interface ScreenOptions {
     sourceId: string;
     resolution: ScreenResolution;
