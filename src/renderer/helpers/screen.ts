@@ -1,6 +1,6 @@
 import { AspectRatio, ScreenResolution } from "../classes/types";
 
-const PRECISION = 0.0001;
+const PRECISION = 0.005;
 
 export function getAspectRatio(resolution: ScreenResolution): AspectRatio {
     const ratio = resolution.width / resolution.height;

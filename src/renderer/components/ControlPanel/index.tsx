@@ -113,7 +113,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formResolution">
-                    <Form.Label>Frame rate</Form.Label>
+                    <Form.Label>Maximum resolution</Form.Label>
                     <ResolutionField
                         name="resolution"
                         onChange={handleChangeResolution}

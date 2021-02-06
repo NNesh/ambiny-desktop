@@ -36,6 +36,7 @@ interface UpdateFormOptions {
 
 const DEFAULT_RESOLUTIONS: ScreenResolution[] = [
     { width: 400, height: 300 },
+    { width: 426, height: 240 },
     { width: 512, height: 384 },
     { width: 640, height: 360 },
     { width: 640, height: 480 },
