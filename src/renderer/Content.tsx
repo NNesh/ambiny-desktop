@@ -155,7 +155,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
 
             let savedOptions: FormOptions;
             try {
-                savedOptions = JSON.parse(localStorage.get("options")) as FormOptions;
+                savedOptions = JSON.parse(localStorage.get('options')) as FormOptions;
             } catch (error) {
                 console.error('No saved options. Default values will be used');
             }

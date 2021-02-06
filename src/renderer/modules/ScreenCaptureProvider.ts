@@ -1,7 +1,7 @@
-import cloneDeep from "lodash/cloneDeep";
-import differenceBy from "lodash/differenceBy";
-import EmitableCaptureProvider from "../classes/CaptureProvider";
-import Source from "../classes/Source";
+import cloneDeep from 'lodash/cloneDeep';
+import differenceBy from 'lodash/differenceBy';
+import EmitableCaptureProvider from '../classes/CaptureProvider';
+import Source from '../classes/Source';
 
 export type ScreenEventType = 'screens-changed';
 

@@ -1,4 +1,4 @@
-import { AspectRatio, ScreenResolution } from "../classes/types";
+import { AspectRatio, ScreenResolution } from '../classes/types';
 
 const PRECISION = 0.005;
 

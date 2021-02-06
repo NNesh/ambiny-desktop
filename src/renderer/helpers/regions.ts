@@ -1,6 +1,6 @@
 import flatten from 'lodash/flatten';
-import RGBA from "../classes/RGBA";
-import Bounds from "../classes/Bounds";
+import RGBA from '../classes/RGBA';
+import Bounds from '../classes/Bounds';
 
 export function calculateAvgColorsOfRegions(canvasContext: CanvasRenderingContext2D, regions: Bounds[]) {
     return regions.map((region) => {
