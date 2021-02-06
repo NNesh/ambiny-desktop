@@ -1,10 +1,11 @@
 import { EventEmitter } from 'events';
 import isEqual from 'lodash/isEqual';
 import { PortInfo } from 'serialport';
+import { Serializable } from '../classes/Serializable';
 import { DataChannel } from '../classes/types';
 
 
-export default class SerialDataChannel extends EventEmitter implements DataChannel<string | number[] | Buffer, any> {
+export default class SerialDataChannel extends EventEmitter implements DataChannel<Serializable<Uint8Array>, any> {
     private provider: SerialPortProvider;
     private devicesList: PortInfo[] = [];
     private checkDeviceInterval: ReturnType<typeof setInterval>;
@@ -20,8 +21,9 @@ export default class SerialDataChannel extends EventEmitter implements DataChann
         return this.provider.list();
     };
 
-    send = (data: string | number[] | Buffer): Promise<any> => {
-        return this.provider.send(data);
+    send = (message: Serializable<Uint8Array>): Promise<any> => {
+        const raw = Buffer.from(message.serialize());
+        return this.provider.send(raw);
     };
 
     open = async (path: string, options?: any): Promise<any> => {

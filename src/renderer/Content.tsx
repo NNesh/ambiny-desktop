@@ -7,6 +7,7 @@ import VideoPreview from './components/VideoPreview';
 import ControlPanel, { FormOptions } from './components/ControlPanel';
 import RegionColorCalculator from './components/RegionColorCalculator';
 import SerialDataChannel from './modules/SerialDataChannel';
+import SerialDataMessage from './modules/SerialDataMessage';
 import { BaudRate, ScreenResolution } from './classes/types';
 import Source from './classes/Source';
 import './Content.less';
@@ -345,6 +346,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
                                 regions={regions}
                                 provider={this.serialDataChannel}
                                 onError={this.handleConnect}
+                                MessageCls={SerialDataMessage}
                             />
                         )}
                     </VideoPreview>

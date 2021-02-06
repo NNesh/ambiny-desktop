@@ -1,8 +1,11 @@
 // import { ipcRenderer } from 'electron';
 import React, { createRef } from 'react';
-import { calculateAvgColorsOfRegions, colorsToArray, colorsToBuffer } from '../../helpers/regions';
+import { calculateAvgColorsOfRegions } from '../../helpers/regions';
 import Bounds from '../../classes/Bounds';
 import { DataChannel } from '../../classes/types';
+import { Serializable } from '../../classes/Serializable';
+import DataMessage from '../../classes/DataMessage';
+import RGBA from '../../classes/RGBA';
 
 const DEFAULT_STYLE = {
     display: 'none',
@@ -11,7 +14,8 @@ const DEFAULT_STYLE = {
 export interface Props {
     videoElement: HTMLVideoElement;
     regions?: Bounds[];
-    provider: DataChannel<Buffer, any>;
+    MessageCls: new () => DataMessage<RGBA[], Uint8Array>
+    provider: DataChannel<Serializable<Uint8Array>, any>;
     onError?: (error: Error) => void;
 };
 
@@ -19,7 +23,15 @@ export default class RegionColorCalculator extends React.Component<Props> {
     private canvasRef = createRef<HTMLCanvasElement>();
     private canvasContext: CanvasRenderingContext2D;
     private handleFrameTimeoutId: ReturnType<typeof setTimeout>;
+    private dataMessage: DataMessage<RGBA[], Uint8Array>;
     private mounted = false;
+
+    constructor(props) {
+        super(props);
+
+        const { MessageCls } = this.props;
+        this.dataMessage = new MessageCls();
+    }
 
     componentDidMount() {
         this.mounted = true;
@@ -61,11 +73,8 @@ export default class RegionColorCalculator extends React.Component<Props> {
 
                 const { provider, onError } = this.props;
 
-                // TODO: implement protocol in another class (interface)
-                const colorArr = colorsToArray(colors, false);
-                const rawMessage = Uint8Array.from([115, 121, 110, 99, 32, ...colorArr]);
-                const message = Buffer.from(rawMessage);
-                provider.send(message)
+                this.dataMessage.item = colors;
+                provider.send(this.dataMessage)
                     .then(() => {
                         this.handleFrameTimeoutId = setTimeout(this.handleFrame, 50);
                     })
