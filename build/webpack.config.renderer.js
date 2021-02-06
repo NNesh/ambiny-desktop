@@ -22,8 +22,9 @@ if (isDev) {
 }
 
 const config = {
+    context: path.resolve(__dirname, '..', 'src', 'renderer'),
     target: 'web',
-    entry: './src/renderer/index.tsx',
+    entry: './index.tsx',
     output: {
         filename: 'renderer.js',
         path: path.resolve(__dirname, '..', 'dist'),
@@ -40,11 +41,11 @@ const config = {
 if (isDev) {
     config.devServer = {
         port: 8080,
-        inline: true,
-        hot: true
+        hot: true,
+        contentBase: path.resolve(__dirname, '..', 'dist'),
     };
 
-    config.devtool = 'inline-source-map';
+    config.devtool = 'source-map';
 }
 
 module.exports = merge(base, config);

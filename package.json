@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "start:main": "cross-env NODE_ENV=development webpack --config build/webpack.config.main.js && electron ./dist/main.js",
+    "start:main": "cross-env NODE_ENV=development webpack --config build/webpack.config.main.js && electron --inspect=5858 --remote-debugging-port=9223 ./dist/main.js",
     "start:renderer": "cross-env NODE_ENV=development webpack serve --config build/webpack.config.renderer.js",
     "build:renderer": "cross-env NODE_ENV=production webpack --config build/webpack.config.renderer.js",
     "build:main": "cross-env NODE_ENV=production webpack --config build/webpack.config.main.js",
