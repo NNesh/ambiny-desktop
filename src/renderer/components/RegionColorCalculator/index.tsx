@@ -76,7 +76,7 @@ export default class RegionColorCalculator extends React.Component<Props> {
                 this.dataMessage.item = colors;
                 provider.send(this.dataMessage)
                     .then(() => {
-                        this.handleFrameTimeoutId = setTimeout(this.handleFrame, 50);
+                        this.handleFrameTimeoutId = setTimeout(this.handleFrame, 35);
                     })
                     .catch((error) => {
                         console.log('Provider send:', error);
