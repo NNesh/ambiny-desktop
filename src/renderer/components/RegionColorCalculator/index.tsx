@@ -15,7 +15,7 @@ export interface Props {
     videoElement: HTMLVideoElement;
     regions?: Bounds[];
     MessageCls: new () => DataMessage<RGBA[], Uint8Array>
-    provider: DataChannel<Serializable<Uint8Array>, any>;
+    provider: DataChannel<Serializable<any>, any>;
     onError?: (error: Error) => void;
 };
 
@@ -23,7 +23,7 @@ export default class RegionColorCalculator extends React.Component<Props> {
     private canvasRef = createRef<HTMLCanvasElement>();
     private canvasContext: CanvasRenderingContext2D;
     private handleFrameTimeoutId: ReturnType<typeof setTimeout>;
-    private dataMessage: DataMessage<RGBA[], Uint8Array>;
+    private dataMessage: DataMessage<RGBA[], any>;
     private mounted = false;
 
     constructor(props) {
