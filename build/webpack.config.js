@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const env = process.env.NODE_ENV === 'production' ? 'production' : 'development';
@@ -77,6 +78,9 @@ const config = {
     ],
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        alias: {
+            '@shared': path.resolve(__dirname, '..', 'src', 'shared'),
+        },
     },
 };
 

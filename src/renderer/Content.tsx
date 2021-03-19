@@ -1,6 +1,7 @@
 import React from 'react';
 import { PortInfo } from 'serialport';
 import memoizeOne from 'memoize-one';
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl';
 import { convertBaudRate } from './helpers/convert';
 import { ScreencastChildrenParams } from './components/Screencast';
 import VideoPreview from './components/VideoPreview';
@@ -51,11 +52,24 @@ const DEFAULT_RESOLUTIONS: ScreenResolution[] = [
     { width: 3840, height: 2160 },
 ];
 
-export default class Content extends React.Component<ScreencastChildrenParams, State> {
+const messages = defineMessages({
+    initializing: {
+        id: 'app-initializing',
+        defaultMessage: 'Application is initializing...',
+    },
+    errorGetScreen: {
+        id: 'error-unable-get-screen',
+        defaultMessage: 'Unable to get screen. Trying to get another screen...',
+    },
+});
+
+export type ContentProps = WrappedComponentProps & ScreencastChildrenParams;
+
+class Content extends React.Component<ContentProps, State> {
     private serialDataChannel = new SerialDataChannel();
     private memoizedInitialValues: MemoizedFormOption;
 
-    constructor(props) {
+    constructor(props: ContentProps) {
         super(props);
 
         this.state = {
@@ -80,13 +94,13 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
         this.prepareApplicationOptions();
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
         if (nextProps.availableSources && this.props.availableSources !== nextProps.availableSources) {
             this.updateOptions({}, nextProps);
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState: State) {
+    shouldComponentUpdate(nextProps: ScreencastChildrenParams, nextState: State) {
         const { port: nextPort, baudRate: nextBaudRate } = nextState.optionValues || {};
         const { port, baudRate } = this.state.optionValues || {};
 
@@ -297,18 +311,19 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
 
     render() {
         const {
+            intl: { formatMessage },
             availableSources,
             stream,
             source,
             error,
-            requesting
+            requesting,
         } = this.props;
         const { optionValues, availablePorts } = this.state;
 
         if (availableSources?.length === 0 || !optionValues || !availablePorts) {
             return (
                 <div className="Content_Placeholder">
-                    Application initializing...
+                    {formatMessage(messages.initializing)}
                 </div>
             );
         }
@@ -316,7 +331,7 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
         if (optionValues?.sourceId && !screen && error) {
             return (
                 <div className="Content_Placeholder">
-                    Unable to get screen. Trying to get another screen...
+                    {formatMessage(messages.errorGetScreen)}
                 </div>
             );
         }
@@ -366,3 +381,5 @@ export default class Content extends React.Component<ScreencastChildrenParams, S
         );
     }
 }
+
+export default injectIntl(Content);

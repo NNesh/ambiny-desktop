@@ -79,6 +79,7 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
+    "@types/react-intl": "^3.0.0",
     "bootstrap": "^4.5.3",
     "events": "^3.2.0",
     "formik": "^2.2.6",
@@ -89,6 +90,7 @@
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^17.0.1",
+    "react-intl": "^5.13.5",
     "serialport": "^9.0.4"
   }
 }

@@ -1,5 +1,13 @@
-const { app, BrowserWindow, Tray, Menu, protocol, screen, ipcMain } = require('electron');
-const path = require('path');
+import { parseLocale } from '@shared/helpers/locales';
+import { en, ru } from '@shared/i18n';
+import { app, BrowserWindow, Tray, Menu, protocol, screen, ipcMain } from 'electron';
+import path from 'path';
+
+
+const LANGS_MESSAGES = {
+  en,
+  ru,
+};
 
 const APP_PROTOCOL = 'ambinight';
 const APP_SCHEMA = `${APP_PROTOCOL}://`;
@@ -11,6 +19,9 @@ const windowIcon = 'icon64x64.png';
 let appTray,
     mainWindow,
     appWillClose = false;
+
+let lang_messages = LANGS_MESSAGES['en'];
+
 
 function trayOpenWindow() {
   if (mainWindow && (!mainWindow.isVisible() || !mainWindow.isFocused())) {
@@ -73,14 +84,17 @@ function prepareApp() {
     return false;
   }
 
+  const lang = parseLocale(app.getLocale());
+  lang_messages = LANGS_MESSAGES[lang] || LANGS_MESSAGES['en'];
+
   appTray = new Tray(path.resolve(__dirname, 'images', trayIcon));
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Open window',
+      label: lang_messages['open-window'] || 'Open window',
       click: trayOpenWindow,
     },
     {
-      label: 'Exit',
+      label: lang_messages['exit'] || 'Exit',
       click: function() {
         app.quit();
       },

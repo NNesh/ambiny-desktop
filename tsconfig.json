@@ -4,10 +4,14 @@
         "jsx": "react",
         "target": "es5",
         "module": "commonjs",
-        "lib": ["dom", "es2015"],
+        "lib": ["dom", "es2019"],
         "noEmitHelpers": true,
         "importHelpers": true,
         "sourceMap": true,
         "esModuleInterop": true,
-    },
+        "baseUrl": "./src",
+        "paths": {
+            "@shared/*": ["shared/*"]
+        }
+    }
 }

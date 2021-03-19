@@ -3,9 +3,11 @@ import debounce from 'lodash/debounce';
 import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { Form, Button } from 'react-bootstrap';
 import { PortInfo } from 'serialport';
+import { useIntl, defineMessages } from 'react-intl';
 import { LEDOptions, PortOptions, ScreenOptions, ScreenResolution } from '../../classes/types';
 import Source from '../../classes/Source';
 import ResolutionField from '../../components/ResolutionField';
+import './ControlPanel.less';
 
 export type FormOptions = ScreenOptions & LEDOptions & PortOptions;
 
@@ -21,6 +23,61 @@ export interface Props {
 
 const baudRates = [115200, 57600, 38400, 19200, 9600];
 
+const messages = defineMessages({
+    selectedScreen: {
+        id: 'selected-screen',
+        defaultMessage: 'Selected screen',
+    },
+    options: {
+        id: 'options',
+        defaultMessages: 'Options',
+    },
+    maxResolution: {
+        id: 'max-res',
+        defaultMessage: 'Maximum resolution',
+    },
+    framerate: {
+        id: 'framerate',
+        defaultMessage: 'Framerate',
+    },
+    ledHorNumber: {
+        id: 'led-hor-number',
+        defaultMessage: 'Amount of horizontal LEDs',
+    },
+    ledVertNumber: {
+        id: 'led-vert-number',
+        defaultMessage: 'Amount of vertical LEDs',
+    },
+    ledHorPadding: {
+        id: 'led-hor-padding',
+        defaultMessage: 'Padding for horizontal LEDs',
+    },
+    ledVertPadding: {
+        id: 'led-vert-padding',
+        defaultMessage: 'Padding for vertical LEDs',
+    },
+    port: {
+        id: 'port-number',
+        defaultMessage: 'Port number',
+    },
+    portSpeed: {
+        id: 'port-speed',
+        defaultMessage: 'Baud rate',
+    },
+    connect: {
+        id: 'connect',
+        defaultMessage: 'connect',
+    },
+    errorLedCount: {
+        id: 'error-form-led-count',
+        defaultMessage: 'LED count should be positive',
+    },
+    errorFramerateValue: {
+        id: 'error-form-framerate',
+        defaultMessage: 'Frame rate should be positive',
+    },
+});
+
 export default function ControlPanel({
     resolutions,
     sources,
@@ -30,6 +87,8 @@ export default function ControlPanel({
     onConnect,
     connected = false,
 }: Props) {
+    const { formatMessage } = useIntl();
+
     const sourcesOptions = useMemo(() => {
         return sources.map(source => <option key={source.getId()} value={source.getId()}>{source.getName()}</option>)
     }, [sources]);
@@ -46,19 +105,19 @@ export default function ControlPanel({
         const errors: any = {};
 
         if (values.horizontalNumber < 1) {
-            errors.horizontalNumber = 'LED count should be positive';
+            errors.horizontalNumber = formatMessage(messages.errorLedCount);
         }
 
         if (values.verticalNumber < 1) {
-            errors.verticalNumber = 'LED count should be positive';
+            errors.verticalNumber = formatMessage(messages.errorLedCount);
         }
 
         if (values.frameRate < 1) {
-            errors.frameRate = 'Frame rate should be positive';
+            errors.frameRate = formatMessage(messages.errorFramerateValue);
         }
 
         return errors;
-    }, []);
+    }, [formatMessage]);
 
     const handleOptionsUpdating = useCallback((values, { setSubmitting, setTouched }: FormikHelpers<FormOptions>) => {
         onUpdateOptions(values);
@@ -94,9 +153,9 @@ export default function ControlPanel({
 
         return (
             <Form noValidate onSubmit={handleSubmit}>
-                <h3>Options</h3>
+                <h3>{formatMessage(messages.options)}</h3>
                 <Form.Group controlId="formScreen">
-                    <Form.Label>Selected screen</Form.Label>
+                    <Form.Label>{formatMessage(messages.selectedScreen)}</Form.Label>
                     <Form.Control
                         name="sourceId"
                         as="select"
@@ -113,7 +172,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formResolution">
-                    <Form.Label>Maximum resolution</Form.Label>
+                    <Form.Label>{formatMessage(messages.maxResolution)}</Form.Label>
                     <ResolutionField
                         name="resolution"
                         onChange={handleChangeResolution}
@@ -124,7 +183,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formFrameRate">
-                    <Form.Label>Frame rate</Form.Label>
+                    <Form.Label>{formatMessage(messages.framerate)}</Form.Label>
                     <Form.Control
                         type="number"
                         name="frameRate"
@@ -139,7 +198,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formLedHorNumber">
-                    <Form.Label>LED horizontal number</Form.Label>
+                    <Form.Label>{formatMessage(messages.ledHorNumber)}</Form.Label>
                     <Form.Control
                         type="number"
                         name="horizontalNumber"
@@ -154,7 +213,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formLedVertNumber">
-                    <Form.Label>LED vertical number</Form.Label>
+                    <Form.Label>{formatMessage(messages.ledVertNumber)}</Form.Label>
                     <Form.Control
                         type="number"
                         name="verticalNumber"
@@ -169,7 +228,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formHorPadding">
-                    <Form.Label>LED horizontal padding</Form.Label>
+                    <Form.Label>{formatMessage(messages.ledHorPadding)}</Form.Label>
                     <Form.Control
                         type="range"
                         name="horizontalPadding"
@@ -185,7 +244,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formVertPadding">
-                    <Form.Label>LED vertical padding</Form.Label>
+                    <Form.Label>{formatMessage(messages.ledVertPadding)}</Form.Label>
                     <Form.Control
                         type="range"
                         name="verticalPadding"
@@ -201,7 +260,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formPort">
-                    <Form.Label>Port</Form.Label>
+                    <Form.Label>{formatMessage(messages.port)}</Form.Label>
                     <Form.Control
                         name="port"
                         as="select"
@@ -218,7 +277,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formBaudRate">
-                    <Form.Label>Baud Rate</Form.Label>
+                    <Form.Label>{formatMessage(messages.portSpeed)}</Form.Label>
                     <Form.Control
                         name="baudRate"
                         as="select"
@@ -236,7 +295,7 @@ export default function ControlPanel({
                     </Form.Control.Feedback>
                 </Form.Group>
                 <Button type="button" onClick={onConnect} disabled={connected}>
-                    Connect
+                    {formatMessage(messages.connect)}
                 </Button>
                 <button ref={submitButtonRef} className="hidden" type="submit"></button>
             </Form>
@@ -244,13 +303,15 @@ export default function ControlPanel({
     }, [sourcesOptions, portsOptions, resolutions, onConnect, connected]);
 
     return (
-        <Formik
-            initialValues={initialValues}
-            onSubmit={handleOptionsUpdating}
-            validate={validate}
-            enableReinitialize
-        >
-            {renderForm}
-        </Formik>
+        <div className="ControlPanel">
+            <Formik
+                initialValues={initialValues}
+                onSubmit={handleOptionsUpdating}
+                validate={validate}
+                enableReinitialize
+            >
+                {renderForm}
+            </Formik>
+        </div>
     );
 }

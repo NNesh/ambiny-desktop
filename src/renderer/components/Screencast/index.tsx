@@ -28,7 +28,6 @@ export interface State {
 }
 
 export default class Screencast extends React.Component<ScreencastProps, State> {
-    private mounted = false;
     private screenCaptureProvider: ScreenCaptureProvider;
 
     constructor(props) {
@@ -53,7 +52,6 @@ export default class Screencast extends React.Component<ScreencastProps, State> 
     }
 
     componentWillUnmount() {
-        this.mounted = false;
         this.screenCaptureProvider.removeAllListeners();
         this.screenCaptureProvider.stopCheckingSources();
     }
