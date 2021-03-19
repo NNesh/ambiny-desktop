@@ -5,7 +5,7 @@ import { Form, Button } from 'react-bootstrap';
 import { PortInfo } from 'serialport';
 import { LEDOptions, PortOptions, ScreenOptions, ScreenResolution } from '../../classes/types';
 import Source from '../../classes/Source';
-import ResolutionField from '../ResolutionField';
+import ResolutionField from '../../components/ResolutionField';
 
 export type FormOptions = ScreenOptions & LEDOptions & PortOptions;
 

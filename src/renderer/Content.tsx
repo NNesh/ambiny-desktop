@@ -4,7 +4,7 @@ import memoizeOne from 'memoize-one';
 import { convertBaudRate } from './helpers/convert';
 import { ScreencastChildrenParams } from './components/Screencast';
 import VideoPreview from './components/VideoPreview';
-import ControlPanel, { FormOptions } from './components/ControlPanel';
+import ControlPanel, { FormOptions } from './layouts/ControlPanel';
 import RegionColorCalculator from './components/RegionColorCalculator';
 import SerialDataChannel from './modules/SerialDataChannel';
 import SerialDataMessage from './modules/SerialDataMessage';
