@@ -17,4 +17,7 @@ module.exports = merge(base, {
     node: {
         __dirname: false,
     },
+    externals:  {
+        serialport: 'commonjs2 serialport'
+    }
 });

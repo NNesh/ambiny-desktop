@@ -42,15 +42,18 @@ function createWindow() {
     icon: path.resolve(__dirname, 'images', windowIcon),
     webPreferences: {
       preload: path.resolve(__dirname, 'preload.js'),
-      nodeIntegration: true,
+      nodeIntegration: false,
       nodeIntegrationInSubFrames: false,
       nodeIntegrationInWorker: false,
     },
   });
 
-  if (!isDev) {
-    mainWindow.setMenu(null);
-  }
+  console.log(path.resolve(__dirname, 'preload.js'));
+
+  // if (!isDev) {
+  //   mainWindow.setMenu(null);
+  // }
+  mainWindow.webContents.openDevTools()
   
   mainWindow.on('close', function(ev) {
     if (appWillClose) {

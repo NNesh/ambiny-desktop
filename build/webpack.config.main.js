@@ -24,11 +24,7 @@ module.exports = merge(base, {
                 {
                     from: 'assets/images',
                     to: 'images',
-                },
-                {
-                    from: 'src/main/preload.js',
-                    to: 'preload.js',
-                },
+                }
             ],
         }),
     ],

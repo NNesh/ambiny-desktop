@@ -14,7 +14,8 @@
     "build:production": "cross-env NODE_ENV=production npm run build",
     "pack": "npm run build:production && electron-builder --dir",
     "dist": "electron-builder",
-    "postinstall": "electron-rebuild"
+    "rebuild": "electron-rebuild -f -w serialport",
+    "postinstall": "npm run rebuild"
   },
   "repository": "",
   "keywords": [
@@ -37,6 +38,9 @@
           "**/*"
         ]
       },
+      "!node_modules/**/*",
+      "node_modules/{serialport,@serialport,debug,ms,bindings,file-uri-to-path}/**/*",
+      "assets/**/*",
       "package.json"
     ],
     "linux": {
