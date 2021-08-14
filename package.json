@@ -20,7 +20,8 @@
   "repository": "",
   "keywords": [
     "Electron",
-    "Ambilight"
+    "Ambilight",
+    "Desktop"
   ],
   "author": "Ruslan Mullayanov",
   "license": "CC0-1.0",
