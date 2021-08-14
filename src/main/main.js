@@ -9,7 +9,7 @@ const LANGS_MESSAGES = {
   ru,
 };
 
-const APP_PROTOCOL = 'ambinight';
+const APP_PROTOCOL = 'ambiny';
 const APP_SCHEMA = `${APP_PROTOCOL}://`;
 
 const isDev = process.env.NODE_ENV === 'development';

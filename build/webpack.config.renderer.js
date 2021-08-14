@@ -10,7 +10,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const plugins = [
     new HtmlWebpackPlugin({
         template: path.resolve(__dirname, '..', 'src', 'renderer', 'index.html'),
-        title: "Ambinight",
+        title: "Ambiny",
     }),
     new webpack.LoaderOptionsPlugin({
         debug: isDev,

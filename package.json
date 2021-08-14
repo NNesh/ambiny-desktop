@@ -1,5 +1,5 @@
 {
-  "name": "ambinight",
+  "name": "ambiny",
   "version": "0.6.1",
   "description": "An ambilight client",
   "main": "main.js",
@@ -25,8 +25,8 @@
   "author": "Ruslan Mullayanov",
   "license": "CC0-1.0",
   "build": {
-    "appId": "ru.app.ambinight",
-    "productName": "Ambinight",
+    "appId": "ru.app.ambiny",
+    "productName": "Ambiny",
     "directories": {
       "buildResources": "assets/images",
       "output": "out"
