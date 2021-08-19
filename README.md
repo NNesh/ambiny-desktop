@@ -16,6 +16,5 @@ Run the following commands:
 
 ```
 npm ci
-npm run build
 npm run pack
 ```
