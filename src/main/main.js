@@ -50,10 +50,9 @@ function createWindow() {
 
   console.log(path.resolve(__dirname, 'preload.js'));
 
-  // if (!isDev) {
-  //   mainWindow.setMenu(null);
-  // }
-  mainWindow.webContents.openDevTools()
+  if (!isDev) {
+    mainWindow.setMenu(null);
+  }
   
   mainWindow.on('close', function(ev) {
     if (appWillClose) {
