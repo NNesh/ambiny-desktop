@@ -48,10 +48,13 @@
       "assets/**/*",
       "package.json"
     ],
+    "mac": {
+      "icon": "./assets/images/icons.icns"
+    },
     "linux": {
-      "target": "deb",
+      "target": "AppImage",
       "maintainer": "Ruslan Mullayanov",
-      "category": "Recorder"
+      "category": "Application"
     },
     "nodeGypRebuild": false,
     "buildDependenciesFromSource": true,
