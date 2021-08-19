@@ -95,7 +95,7 @@ class Content extends React.Component<ContentProps, State> {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
-        if (nextProps.availableSources && this.props.availableSources !== nextProps.availableSources) {
+        if (this.state.optionValues && nextProps.availableSources && this.props.availableSources !== nextProps.availableSources) {
             this.updateOptions({}, nextProps);
         }
     }

@@ -12,7 +12,7 @@
     "build:main": "npm run build:preload && webpack --config build/webpack.config.main.js",
     "build": "npm run build:renderer && npm run build:main",
     "build:production": "cross-env NODE_ENV=production npm run build",
-    "pack": "npm run build:production && electron-builder --dir",
+    "pack": "npm run build:production && electron-builder",
     "dist": "electron-builder",
     "rebuild": "electron-rebuild -f -w serialport",
     "postinstall": "npm run rebuild"
@@ -24,6 +24,10 @@
     "Desktop"
   ],
   "author": "Ruslan Mullayanov",
+  "homepage": "https://github.com/NNesh/ambiny-desktop",
+  "bugs": {
+    "url": "https://github.com/NNesh/ambiny-desktop/issues"
+  },
   "license": "MIT",
   "build": {
     "appId": "ru.app.ambiny",
@@ -45,6 +49,8 @@
       "package.json"
     ],
     "linux": {
+      "target": "deb",
+      "maintainer": "Ruslan Mullayanov",
       "category": "Recorder"
     },
     "nodeGypRebuild": false,

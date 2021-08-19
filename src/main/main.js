@@ -53,7 +53,7 @@ function createWindow() {
   if (!isDev) {
     mainWindow.setMenu(null);
   }
-  
+
   mainWindow.on('close', function(ev) {
     if (appWillClose) {
       return;
