@@ -24,7 +24,7 @@
     "Desktop"
   ],
   "author": "Ruslan Mullayanov",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "build": {
     "appId": "ru.app.ambiny",
     "productName": "Ambiny",
@@ -50,6 +50,9 @@
     "nodeGypRebuild": false,
     "buildDependenciesFromSource": true,
     "npmRebuild": false
+  },
+  "engines": {
+    "node": ">=14.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
