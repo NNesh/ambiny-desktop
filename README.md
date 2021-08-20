@@ -18,3 +18,6 @@ Run the following commands:
 npm ci
 npm run pack
 ```
+
+## Firmware
+* [Arduino](https://github.com/NNesh/ambiny-arduino-firmware)
