@@ -7,6 +7,12 @@
 ## Description
 Ambiny is an open source desktop application for ambilight.
 
+## Features
+ * Implements single screen capturing to calculate colors for ambilight LEDs
+ * Configurable resolution, fps, calculation zones, COM port, LED counts and etc.
+ * Multiplatform
+ * Works in background
+
 ## For developers
 
 First, install basic dependencies:
