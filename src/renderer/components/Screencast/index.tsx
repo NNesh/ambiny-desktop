@@ -75,11 +75,7 @@ export default class Screencast extends React.Component<ScreencastProps, State> 
 
         this.removeStream();
 
-        if (options) {
-            this.screenCaptureProvider.captureOptions = options;
-        }
-
-        this.screenCaptureProvider.requestCaptureSource(source)
+        this.screenCaptureProvider.requestCaptureSource(source, options)
             .then((stream) => this.handleGotStream(stream, source))
             .catch(this.handleError);
     }

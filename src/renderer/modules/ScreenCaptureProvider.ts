@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep';
 import differenceBy from 'lodash/differenceBy';
 import EmitableCaptureProvider from '../classes/CaptureProvider';
 import Source from '../classes/Source';
@@ -26,7 +25,11 @@ export default class SourceCaptureProvider extends EmitableCaptureProvider<Media
         }
     }
 
-    async requestCaptureSource(source: Source): Promise<MediaStream> {
+    async requestCaptureSource(source: Source, options?: ScreenCaptureOptions): Promise<MediaStream> {
+        if (options) {
+            this._captureOptions = options;
+        }
+        
         const videoConstraints = {
             mandatory: {
                 chromeMediaSource: 'desktop',
@@ -81,13 +84,5 @@ export default class SourceCaptureProvider extends EmitableCaptureProvider<Media
             this.emit('screens-changed', availableSources);
             this.lastSources = availableSources;
         }
-    }
-
-    set captureOptions(value: ScreenCaptureOptions) {
-        this._captureOptions = value;
-    }
-
-    get captureOptions(): ScreenCaptureOptions {
-        return cloneDeep<ScreenCaptureOptions>(this._captureOptions);
     }
 }
