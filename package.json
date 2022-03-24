@@ -49,6 +49,8 @@
       "package.json"
     ],
     "mac": {
+      "category": "public.app-category.utilities",
+      "target": "default",
       "icon": "./assets/images/icons.icns"
     },
     "linux": {
